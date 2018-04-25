@@ -9,7 +9,7 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r, echo= FAlSE}
+```{r, echo = F}
 rm(list=ls())
 ```
 
@@ -42,35 +42,28 @@ result <- ode(time = time,
               func = Calculate.mRNA,
               method = "euler")
 
-
+# parameters verandert waardoor je een toenemende hoeveelheid mRNA krijgt
 para <- c(r = 0.2, m = 22)
 result_increasing <- ode(time = time,
                          y = state,
                          parms = para,
                          func = Calculate.mRNA,
                          method = "euler")
-
+# parameters verandert waardoor je een afnemende hoeveelheid mRNA krijgt
 para <- c(r = 0.2, m = 18)
 result_decreasing <- ode(time = time,
                          y = state,
                          parms = para,
                          func = Calculate.mRNA,
                          method = "euler")
-```
 
-```{r}
-plot(result,
+plot(result, result_increasing, result_decreasing,
      main = "Hoeveelheid mRNA transcripts over de tijd",
      ylab = "Hoeveelheid mRNA transcripts",
      xlab = "Tijdpunten",
      ylim = c(85,115))
 
-lines(result_increasing,
-      col = "red")
-
-lines(result_decreasing,
-      col = "green")
-
 legend("topright",
-       c("steady-state", "increasing", "decreasing"))
+       c("[A]. Steady-state", "[B]. Toenemend", "[C]. Afnemend"),
+       col = c("black", "red", "green"), lty = 1:3)
 ```
