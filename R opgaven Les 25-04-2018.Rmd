@@ -13,6 +13,52 @@ knitr::opts_chunk$set(echo = TRUE)
 rm(list=ls())
 ```
 
-Opgave 1:
+dR/dt = -rR + m
+  -  R is the number of transcripts
+  -  r is the rate of decay of existing transcripts
+  -  m is the number of new transcripts produced per second
+
+##Opgave 1:
 [1].  R, r & m
 [2].  
+
+##Opgave 2:
+```{r}
+library(deSolve)
+
+time <- seq(0, 100, by = 1)
+para <- c(r = 0, m = 0)
+state <- c(R = 100)
+
+Calculate.mRNA <- function(time, R, para){
+  with(as.list(c(para)),{
+    dR <- -r * (R + m)
+    return(list(c(dR)))
+  }
+       )
+  
+}
+
+result <- ode(time = time,
+              y = state,
+              parms = para,
+              func = Calculate.mRNA,
+              method = "euler")
+
+
+para <- c(r = 0.25, m = 5)
+result_increasing <- ode(time = time,
+                         y = state,
+                         parms = para,
+                         func = Calculate.mRNA,
+                         method = "euler")
+
+para <- c(r = 0.25, m = -5)
+result_decreasing <- ode(time = time,
+                         y = state,
+                         parms = para,
+                         func = Calculate.mRNA,
+                         method = "euler")
+
+plot(result, result_increasing, result_decreasing)
+```
