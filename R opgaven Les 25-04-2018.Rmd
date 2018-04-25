@@ -13,26 +13,23 @@ knitr::opts_chunk$set(echo = TRUE)
 rm(list=ls())
 ```
 
-dR/dt = -rR + m
-  -  R is the number of transcripts
-  -  r is the rate of decay of existing transcripts
-  -  m is the number of new transcripts produced per second
-
 ##Opgave 1:
 [1].  R, r & m
 [2].  
+[3].  Zie ModelOpgave3.png
+[4].  De return van het model is dR, dit is namelijk de hoeveelhied rna over de verschillende tijd punten. 
 
 ##Opgave 2:
 ```{r}
 library(deSolve)
 
-time <- seq(0, 100, by = 1)
-para <- c(r = 0, m = 0)
+time <- seq(0, 30, by = 1)
+para <- c(r = 0.2, m = 20)
 state <- c(R = 100)
 
 Calculate.mRNA <- function(time, R, para){
   with(as.list(c(para)),{
-    dR <- -r * (R + m)
+    dR <- -r * R + m
     return(list(c(dR)))
   }
        )
@@ -46,19 +43,34 @@ result <- ode(time = time,
               method = "euler")
 
 
-para <- c(r = 0.25, m = 5)
+para <- c(r = 0.2, m = 22)
 result_increasing <- ode(time = time,
                          y = state,
                          parms = para,
                          func = Calculate.mRNA,
                          method = "euler")
 
-para <- c(r = 0.25, m = -5)
+para <- c(r = 0.2, m = 18)
 result_decreasing <- ode(time = time,
                          y = state,
                          parms = para,
                          func = Calculate.mRNA,
                          method = "euler")
+```
 
-plot(result, result_increasing, result_decreasing)
+```{r}
+plot(result,
+     main = "Hoeveelheid mRNA transcripts over de tijd",
+     ylab = "Hoeveelheid mRNA transcripts",
+     xlab = "Tijdpunten",
+     ylim = c(85,115))
+
+lines(result_increasing,
+      col = "red")
+
+lines(result_decreasing,
+      col = "green")
+
+legend("topright",
+       c("steady-state", "increasing", "decreasing"))
 ```
