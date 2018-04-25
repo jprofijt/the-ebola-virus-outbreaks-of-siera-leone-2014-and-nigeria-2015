@@ -1,0 +1,13 @@
+---
+title: "R opgraven Les 25-04-218"
+author: "Rinze-Pieter Jonker & Jouke Profijt"
+date: "25 april 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE, cache=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r, echo= FAlSE}
+rm(list=ls())
+```

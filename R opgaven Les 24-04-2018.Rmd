@@ -1,0 +1,170 @@
+---
+title: "evenwicht uitrekenen"
+author: "Rinze-Pieter Jonker & Jouke Profijt"
+date: "25 april 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+rm(list=ls())
+```
+
+```{r}
+library(deSolve)
+
+para <- c(add = 10, pV = 0.1)
+state <- c(volume = 0)
+times <- seq(0, 100,  by = 1)
+
+Calculate.Balans <- function(time, y, para){
+ with(as.list(c(para)),{
+         dY <- add - pV * (y+add)
+         return(list(c(dY)))
+       }
+       )
+  
+}
+out <- ode(time = times,
+           y = state,
+           parms = para,
+           func = Calculate.Balans,
+           method = "euler")
+
+head(out)
+plot(out)
+
+```
+
+parameters verandert
+```{r}
+para <- c(add = 5, pV = 0.1)
+state <- c(volume = 0)
+times <- seq(0, 100,  by = 1)
+
+out2 <- ode(time = times,
+           y = state,
+           parms = para,
+           func = Calculate.Balans,
+           method = "euler")
+
+para <- c(add = 15, pV = 0.1)
+state <- c(volume = 0)
+times <- seq(0, 100,  by = 1)
+
+out3 <- ode(time = times,
+           y = state,
+           parms = para,
+           func = Calculate.Balans,
+           method = "euler")
+
+para <- c(add = 10, pV = 0.2)
+state <- c(volume = 0)
+times <- seq(0, 100,  by = 1)
+
+out4 <- ode(time = times,
+           y = state,
+           parms = para,
+           func = Calculate.Balans,
+           method = "euler")
+
+para <- c(add = 10, pV = 0.05)
+state <- c(volume = 0)
+times <- seq(0, 100,  by = 1)
+
+out5 <- ode(time = times,
+           y = state,
+           parms = para,
+           func = Calculate.Balans,
+           method = "euler")
+```
+
+```{r}
+plot(out, out2, out3, out4, out5)
+legend("topright",
+       c("normaal", "minder toevoeging", 
+         "meer toevoeging", "lager percentage", "hoger percentage"))
+
+```
+
+initiële waarde veranderen
+```{r}
+para <- c(add = 10, pV = 0.1)
+state <- c(volume = 10)
+times <- seq(0, 100,  by = 1)
+
+init1 <- ode(time = times,
+           y = state,
+           parms = para,
+           func = Calculate.Balans,
+           method = "euler")
+
+para <- c(add = 10, pV = 0.1)
+state <- c(volume = -10)
+times <- seq(0, 100,  by = 1)
+
+init2 <- ode(time = times,
+           y = state,
+           parms = para,
+           func = Calculate.Balans,
+           method = "euler")
+```
+
+```{r}
+plot(out, init1, init2)
+```
+
+time veranderen
+```{r}
+para <- c(add = 10, pV = 0.1)
+state <- c(volume = 0)
+times <- seq(0, 50,  by = 1)
+
+ti1 <- ode(time = times,
+           y = state,
+           parms = para,
+           func = Calculate.Balans,
+           method = "euler")
+
+para <- c(add = 10, pV = 0.1)
+state <- c(volume = 0)
+times <- seq(0, 150,  by = 1)
+
+ti2 <- ode(time = times,
+           y = state,
+           parms = para,
+           func = Calculate.Balans,
+           method = "euler")
+```
+
+```{r}
+plot(ti1)
+plot(out)
+plot(ti2)
+```
+
+vraag 4:
+```{r}
+para <- c(add = 10, pV = 0.1)
+state <- c(volume = 0)
+times <- seq(0, 100,  by = 1)
+
+Calculate.Balans <- function(time, y, para){
+ with(as.list(c(para)),{
+         dY <- add - pV * y
+         return(list(c(dY)))
+       }
+       )
+}
+
+new_out <- ode(time = times,
+           y = state,
+           parms = para,
+           func = Calculate.Balans,
+           method = "euler")
+
+plot(out , new_out)
+```
