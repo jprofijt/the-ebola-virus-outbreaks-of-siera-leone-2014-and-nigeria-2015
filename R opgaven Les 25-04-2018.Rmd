@@ -13,13 +13,20 @@ knitr::opts_chunk$set(echo = TRUE)
 rm(list=ls())
 ```
 
-##Opgave 1:
+## 1.0 Experiment
 [1].  R, r & m
-[2].  
+
+[2].  [https://link.springer.com/referenceworkentry/10.1007%2F978-1-4419-9863-7_382](https://link.springer.com/referenceworkentry/10.1007%2F978-1-4419-9863-7_382).
+      
+      Uit deze bron kunnen we halen dat de formule die wij gebruiken linear is.
+
 [3].  Zie ModelOpgave3.png
+
 [4].  De return van het model is dR, dit is namelijk de hoeveelhied rna over de verschillende tijd punten. 
 
-##Opgave 2:
+
+## 2.0 Programmeer opdracht:
+
 ```{r}
 library(deSolve)
 
@@ -54,7 +61,7 @@ para <- c(r = 0.2, m = 18)
 result_decreasing <- ode(time = time,
                          y = state,
                          parms = para,
-                         func = Calculate.mRNA,
+                         func= Calculate.mRNA,
                          method = "euler")
 
 plot(result, result_increasing, result_decreasing,
