@@ -13,6 +13,16 @@ knitr::opts_chunk$set(echo = TRUE)
 rm(list=ls())
 ```
 
+## 1.0 Experiment
+[1].  Het toe te voegen volume (hier 10)
+      Het percentage wat er af gaat (hier ook weer 10)
+[2].  Het Volume
+[3].  0
+[4].  0.30
+[5].  afgerond op 28
+[6].  wanneer dY = 0
+
+## 2.0 Programmeer opdracht
 ```{r}
 library(deSolve)
 
@@ -35,11 +45,19 @@ out <- ode(time = times,
            method = "euler")
 
 head(out)
-plot(out)
+plot(out,
+     main = "Volume over tijd",
+     ylab = "Volume",
+     xlab = "Tijdpunten")
 
 ```
 
-parameters verandert
+[1].  parameters verandert naar 5 verschillende
+      - normaal
+      - minder per keer toevoegen
+      - meer per keer toevoegen
+      - hoger percentage er van af
+      - lager percentage er van af
 ```{r}
 para <- c(add = 5, pV = 0.1)
 state <- c(volume = 0)
@@ -80,17 +98,23 @@ out5 <- ode(time = times,
            parms = para,
            func = Calculate.Balans,
            method = "euler")
-```
 
-```{r}
-plot(out, out2, out3, out4, out5)
+plot(out, out2, out3, out4, out5,
+     main = "Volume over tijd",
+     ylab = "Volume",
+     xlab = "Tijdpunten")
+
 legend("topright",
        c("normaal", "minder toevoeging", 
-         "meer toevoeging", "lager percentage", "hoger percentage"))
+         "meer toevoeging", "lager percentage", "hoger percentage"),
+       lty = 1:5,
+       col = c("black", "red", "green", "dark blue", "cyan"))
 
 ```
-
-initiÃ«le waarde veranderen
+[2].  initiële waardes aangepast naar 3 verschillende
+      - normaal
+      - hoger dan normaal
+      - lager dan normaal
 ```{r}
 para <- c(add = 10, pV = 0.1)
 state <- c(volume = 10)
@@ -111,13 +135,22 @@ init2 <- ode(time = times,
            parms = para,
            func = Calculate.Balans,
            method = "euler")
+
+plot(out, init1, init2,
+     main = "Volume over tijd",
+     ylab = "Volume",
+     xlab = "Tijdpunten")
+
+legend("topright",
+       c("normaal", "initiële waarde omhoog gezet", "initiële waarde omlaag gezet"),
+       lty = 1:3,
+       col = c("black", "red", "green"))
 ```
 
-```{r}
-plot(out, init1, init2)
-```
-
-time veranderen
+[3].  de tijdpunten verandert
+      - normaal
+      - meer tijdunten
+      - minder tijdpunten
 ```{r}
 para <- c(add = 10, pV = 0.1)
 state <- c(volume = 0)
@@ -141,9 +174,26 @@ ti2 <- ode(time = times,
 ```
 
 ```{r}
-plot(ti1)
-plot(out)
-plot(ti2)
+plot(ti1,
+     main = "Volume over tijd",
+     ylab = "Volume",
+     xlab = "Tijdpunten",
+     sub = "met 50 tijdpunten",
+     xlim = c(0, 200))
+
+plot(out,
+     main = "Volume over tijd",
+     ylab = "Volume",
+     xlab = "Tijdpunten",
+     sub = "met 100 tijdpunten",
+     xlim = c(0, 200))
+
+plot(ti2,
+     main = "Volume over tijd",
+     ylab = "Volume",
+     xlab = "Tijdpunten",
+     sub = "met 150 tijdpunten",
+     xlim = c(0, 200))
 ```
 
 vraag 4:
@@ -166,5 +216,12 @@ new_out <- ode(time = times,
            func = Calculate.Balans,
            method = "euler")
 
-plot(out , new_out)
+plot(out , new_out,
+     main = "Volume over tijd",
+     ylab = "Volume",
+     xlab = "Tijdpunten")
+legend("topright",
+       c("model met (Y + A)", "model met Y"),
+       col = c("black", "red"),
+       lty = 1:2)
 ```
