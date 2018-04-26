@@ -1,0 +1,129 @@
+---
+title: "DeSolve Tutorial"
+author: "Jouke Profijt"
+date: "25 april 2018"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Opgave 3, deSolve Tutorial
+```{r}
+parameters <- c(a = -8/3,
+                b = -10,
+                c = 28)
+
+state <- c(X = 1,
+           Y = 1,
+           Z = 1)
+```
+```{r}
+Lorenz <- function(t, state, parameters){
+  with(as.list(c(state, parameters)), {
+    # Snelheid van de verandering
+    dX <- a*X + Y*Z
+    dY <- b * (Y - Z)
+    dZ <- X*Y + c*Y - Z
+    
+    # Return de snelheid van de verandering
+    list(c(dX, dY, dZ))
+  })
+}
+```
+
+```{r}
+times <- seq(0, 100, by = 0.01)
+```
+```{r}
+library(deSolve)
+out <- ode(y = state, 
+           times = times, 
+           func = Lorenz, 
+           parms = parameters)
+head(out)
+```
+
+```{r}
+par(oma = c(0, 0, 3, 0))
+plot(out, xlab = "tijd", ylab = "-")
+plot(out[, "X"], out[, "Z"], pch = ".")
+mtext(outer = TRUE, side = 3, "Lorenz model", cex = 1.5)
+```
+Door een error is hier geen plot te zien.
+## 10.1 Plotting multiple Scenario's
+
+```{r}
+library(deSolve)
+combustion <- function(t, y, parms) list(y^2 * (1 - y) )
+
+yini <- 0.01
+times <- 0 : 200
+
+out <- ode(times = times, y = yini, parms = 0, func = combustion)
+out2 <- ode(times = times, y = yini*2, parms = 0, func = combustion)
+out3 <- ode(times = times, y = yini*3, parms = 0, func = combustion)
+out4 <- ode(times = times, y = yini*3, parms = 0, func = combustion)
+```
+
+
+```{r}
+plot(out, out2, out3, out4, main = "combustion")
+legend("bottomright", lty = 1:4, col = 1:4, legend = 1:4, title = "yini*i")
+```
+Hierboven is een plot van de combustion vs de tijd, bij elke neiuwe test is de begin waarde voor de combustion anngepast en hier kun je zien dat hoe hoger de begin waarde hoe sneller de 1.0 is berijkt.
+```{r}
+head(ccl4data)
+```
+
+```{r}
+obs <- subset (ccl4data, animal == "A", c(time, ChamberConc))
+names(obs) <- c("time", "CP")
+head(obs)
+```
+
+```{r}
+parms <- c(0.182, 4.0, 4.0, 0.08, 0.04, 0.74, 0.05, 0.15, 0.32, 16.17,281.48, 13.3, 16.17, 5.487, 153.8, 0.04321671, 0.40272550, 951.46, 0.02, 1.0,  3.80000000)
+
+yini <- c(AI = 21, AAM = 0, AT = 0, AF = 0, AL = 0, CLT = 0, AM = 0)
+out <- ccl4model(times = seq(0, 6, by = 0.05), y = yini, parms = parms)
+par2 <- parms
+par2[1] <- 0.1
+out2 <- ccl4model(times = seq(0, 6, by = 0.05), y = yini, parms = par2)
+par3 <- parms
+par3[1] <- 0.05
+out3 <- ccl4model(times = seq(0, 6, by = 0.05), y = yini, parms = par3)
+
+```
+```{r}
+plot(out, out2, out3, 
+     which = c("AI", "MASS", "CP"), 
+     col = c("black", "red", "green"), lwd = 2,
+     obs = obs, 
+     obspar = list(pch = 18, col = "blue", 
+                   cex = 1.2))
+legend("topright", lty = c(1,2,3,NA), pch = c(NA, NA, NA, 18), col = c("black", "red", "green", "blue"), lwd = 2,
+       legend = c("par1", "par2", "par3", "obs"))
+
+
+```
+Totale massa per dag van het organime
+```{r}
+obs2 <- data.frame(time = 6, MASS = 12)
+plot(out, out2, out3, lwd = 2,
+     obs = list(obs, obs2),
+     obspar = list(pch = c(16, 18), col = c("blue", "black"), cex = c(1.2, 2))
+     )
+```
+Totale massa ven het organisme per dag
+```{r}
+hist(out, col = grey(seq(0, 1, by = 0.1)), 
+     mfrow = c(3, 4))
+```
+Geen histogram ivm error.
+
+
