@@ -1,0 +1,61 @@
+---
+title: 'R opgaven 08-05-2018'
+author: "Rinze-Pieter Jonker & Jouke Profijt"
+date: "May 8, 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Opgaven Week 2
+
+__[1]. Schrijf een korte introductie over corticosteroiden, het gebruik ervan en het werkingsmechanisme.__
+
+Corticosteroiden zijn steriodhormonen die worden gebruikt tegen ontstekingen en infecties. Dit steroidhormoon wordt  gemaakt in de bijnier en bestaat voornamelijk uit twee groepen, glucocorticosteroiden en mineralocorticosterioden. De meeste corticosteroiden die worden gebruikt zijn glucocorticosteroiden, daarom gaan we het hier ook het meeste over hebben. Deze corticosteroiden worden veel gebruikt tegen aandoeningen zoals asma. De glucocorticosteroiden werken door ontstekingsremmende genen te activeren en de expressie van pro-onstekking genen te induceren.
+
+&nbsp;
+
+__[2]. Beschrijf op basis van het model hoe de interactie verloopt tussen het geneesmiddel en de productie van receptor.__
+
+Hoe meer er van het medicijn komt, hoe meer de transcriptie wordt gerepressed, hierdoor kommen er minder receptoren. Dit heeft dus ook weer effect op het medicijn die niet meer kan binden aan de receptor. Hier zit dus een evenwicht in.
+
+
+&nbsp;
+
+__[3]. Implementeer het model in R, waarbij je er van uit kunt gaan dat de concentratie MPL constant is (een parameter) en gelijk is aan 20 ng/mL. Denk er om dat de eenheid omgerekend moet worden om de vergelijkingen kloppend te maken. Dus 20 ng/ml * 1000 ml/L * 1 mol/ molgewicht g geeft nmol/L. __
+
+*hier moeten de parameters nog worden aangepast aan de eenheden*
+
+```{r, echo = F}
+rm(list = ls())
+```
+
+```{r}
+time <- seq(0, 48, 1)
+
+# fmol/g, fmol/mg, percentage, vergroting, L/h, L/nanomol/h, L/h, L/h, niks, ng/ml
+para <- c(ksrm = 2.90,
+          IC50rm = 26.2,
+          kdrm = 0.612,
+          ksr = 3.22,
+          kre = 0.75,
+          kon = 0.00329,
+          kdr = 0.0572,
+          kot = 0.63,
+          Rf = 0.49,
+          D = 20)
+
+# fmol/g, fmol/mg, fmol/mg, fmol/mg
+state <- c(Rmo = 4.74,
+           Ro = 2.67,
+           DR = 0,
+           DRN = 0)
+
+cocortisocosteroid.model <- function(time, para, state){
+    with(as.list(c(para)),{
+        
+        }
+    )
+}
+```
