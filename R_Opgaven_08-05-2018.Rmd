@@ -25,37 +25,73 @@ Hoe meer er van het medicijn komt, hoe meer de transcriptie wordt gerepressed, h
 
 __[3]. Implementeer het model in R, waarbij je er van uit kunt gaan dat de concentratie MPL constant is (een parameter) en gelijk is aan 20 ng/mL. Denk er om dat de eenheid omgerekend moet worden om de vergelijkingen kloppend te maken. Dus 20 ng/ml * 1000 ml/L * 1 mol/ molgewicht g geeft nmol/L. __
 
+\pagebreak
+
 *hier moeten de parameters nog worden aangepast aan de eenheden*
 
-```{r, echo = F}
+```{r, echo = F, message = F}
 rm(list = ls())
+library(deSolve)
 ```
 
 ```{r}
+#tijd is voor twee dagen, 24 * 2
 time <- seq(0, 48, 1)
 
-# fmol/g, fmol/mg, percentage, vergroting, L/h, L/nanomol/h, L/h, L/h, niks, ng/ml
-para <- c(ksrm = 2.90,
+#parameters
+para <- c(ksrm = 2.9,
           IC50rm = 26.2,
           kdrm = 0.612,
           ksr = 3.22,
-          kre = 0.75,
+          kre = 0.57,
           kon = 0.00329,
           kdr = 0.0572,
-          kot = 0.63,
+          kt = 0.63,
           Rf = 0.49,
-          D = 20)
+          D = (20 * 1000) / 371.471 ) # verander hier de 20 om de D waarde aan te passen
+                                      # dit zet het om van ng/ml naar nmol/l
 
-# fmol/g, fmol/mg, fmol/mg, fmol/mg
-state <- c(Rmo = 4.74,
-           Ro = 2.67,
+#startwaardes
+state <- c(Rmo = 4.740, 
+           Ro = 267,
            DR = 0,
            DRN = 0)
 
 cocortisocosteroid.model <- function(time, para, state){
-    with(as.list(c(para)),{
+    with(as.list(c(state, para)),{
+        dmRNA <- ksrm * (1 - DRN / (IC50rm + DRN)) - kdrm * Rmo
+        dR <- ksr * Rmo + Rf * kre * DRN - kon * D * Ro - kdr * Ro
+        dDR <- kon * D * Ro - kt * DR
+        dDRN <- kt * DR - kre * DRN
         
+        return(list(c(dmRNA, dR, dDR, dDRN)))
         }
     )
 }
+
+out <- ode(y = state,
+           times = time,
+           parms = para,
+           func = cocortisocosteroid.model,
+           method = "euler")
+```
+
+
+__ [4]. __
+```{r}
+plot(out,
+     xlab = "time")
+
+# plot(out[,1], out[,2] ,
+#      type = "l",
+#      ylim = c(0, 250))
+#  
+# lines(out[,3],
+#        col = "blue")
+# lines(out[,4],
+#    col = "red")
+# lines(out[,5],
+#    col = "green")
+
+
 ```
