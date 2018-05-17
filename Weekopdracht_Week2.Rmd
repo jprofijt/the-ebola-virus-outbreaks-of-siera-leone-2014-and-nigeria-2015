@@ -1,0 +1,119 @@
+---
+title: 'R opgaven 08-05-2018'
+author: "Rinze-Pieter Jonker & Jouke Profijt"
+date: "May 8, 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Opgaven Week 2
+
+__[1]. Schrijf een korte introductie over corticosteroiden, het gebruik ervan en het werkingsmechanisme.__
+
+Corticosteroiden zijn steriodhormonen die worden gebruikt tegen ontstekingen en infecties. Dit steroidhormoon wordt  gemaakt in de bijnier en bestaat voornamelijk uit twee groepen, glucocorticosteroiden en mineralocorticosterioden. De meeste corticosteroiden die worden gebruikt zijn glucocorticosteroiden, daarom gaan we het hier ook het meeste over hebben. Deze corticosteroiden worden veel gebruikt tegen aandoeningen zoals asma. De glucocorticosteroiden werken door ontstekingsremmende genen te activeren en de expressie van pro-onstekking genen te induceren.
+
+&nbsp;
+
+__[2]. Beschrijf op basis van het model hoe de interactie verloopt tussen het geneesmiddel en de productie van receptor.__
+
+Hoe meer er van het medicijn komt, hoe meer de transcriptie wordt gerepressed, hierdoor kommen er minder receptoren. Dit heeft dus ook weer effect op het medicijn die niet meer kan binden aan de receptor. Hier zit dus een evenwicht in.
+
+
+&nbsp;
+
+__[3]. Implementeer het model in R, waarbij je er van uit kunt gaan dat de concentratie MPL constant is (een parameter) en gelijk is aan 20 ng/mL. Denk er om dat de eenheid omgerekend moet worden om de vergelijkingen kloppend te maken. Dus 20 ng/ml * 1000 ml/L * 1 mol/ molgewicht g geeft nmol/L. __
+
+```{r, echo = F, message = F}
+rm(list = ls())
+library(deSolve)
+```
+
+```{r}
+#tijd is voor twee dagen, 24 * 2
+time <- seq(0, 48, 1)
+
+#parameters
+para <- c(ksrm = 2.9,
+          IC50rm = 26.2,
+          kdrm = 0.612,
+          ksr = 3.22,
+          kre = 0.57,
+          kon = 0.00329,
+          kdr = 0.0572,
+          kt = 0.63,
+          Rf = 0.49,
+          D = (20 * 1000) / 371.471 ) # verander hier de 20 om de D waarde aan te passen
+                                      # dit zet het om van ng/ml naar nmol/l
+
+#startwaardes
+state <- c(Rmo = 4.740, 
+           Ro = 267,
+           DR = 0,
+           DRN = 0)
+
+cocortisocosteroid.model <- function(time, para, state){
+    with(as.list(c(state, para)),{
+        dmRNA <- ksrm * (1 - DRN / (IC50rm + DRN)) - kdrm * Rmo
+        dR <- ksr * Rmo + Rf * kre * DRN - kon * D * Ro - kdr * Ro
+        dDR <- kon * D * Ro - kt * DR
+        dDRN <- kt * DR - kre * DRN
+        
+        return(list(c(dmRNA, dR, dDR, dDRN)))
+        }
+    )
+}
+
+out <- ode(y = state,
+           times = time,
+           parms = para,
+           func = cocortisocosteroid.model,
+           method = "euler")
+```
+
+het model is hierboven geimplementeerd, hierbij is de D waarde omgrekent van ng/ml naar nmo/l. De startwaardes voor de hoeveelheid mRNAR en de concentratie van de vrije receptoren zijn hier 4.74 fmol/g en 267 fmol/mg.
+
+\pagebreak
+
+__[4]. Simuleer het model voor een duur van twee dagen. Let op: de snelheidsconstante is per uur, dus de tijdsframe moet hier rekening mee houden.__
+```{r}
+plot(out[,1], out[,2],
+     type = "l", 
+     xlab = "Tijd in uur",
+     ylab = "fmol/g mRNAR",
+     main = "Concentratie mRNAR over 48 uur")
+
+plot(out[,1], out[,3], 
+     type = "l",
+     xlab = "Tijd in uur",
+     ylab = "fmol/mg vrije glucocorticoid receptoren",
+     main = "Concentratie vrije glucocorticoid receptoren over 48 uur")
+
+plot(out[,1], out[,4], 
+     type = "l",
+     xlab = "Tijd in uur",
+     ylab = "fmol/mg MPL-receptor complex",
+     main = "Dichtheid van het MPL-receptoren complex over 48 uur")
+
+plot(out[,1], out[,5], 
+     type = "l",
+     xlab = "Tijd in uur", 
+     ylab = "fmol/mg MPL-receptoren complex",
+     main = "Hoeveelheid MPL-receptoren complex in de nucleus over 48 uur")
+
+```
+In deze plotten zijn te zien dat de dichtheid van de MPL-receptoren complex en de hoeveelheid MPL-receptoren complexen enorm steigt en een piekt rond 6 uur, echter daalt deze hierna dan af naar evenwicht. De concentratie vrije glucocorticoid receptoren en de concentratie van mRNAR dalen hier juist, de concentratie mRNAR is hier juist interessant omdat deze na een heeltijd daalt rond 6 uur zijn diepste punt bereikt waarna deze concentratie weer terug gaat naar het evenwicht punt.
+
+\pagebreak
+
+__[5]. Beschrijf de resultaten: Wat gebeurt er in de tijd en hoe kun je dit verklaren aan de hand van de interacties tussen de variabelen? Welke veranderingen treden op in (a) de concentratie vrije receptor, (b) de concentratie cytosol MPL-receptor complex, (c) de concentratie geactiveerd MPL-receptor complex, de totale concentratie receptoren en de concentratie receptor mRNA. Bepaal welke variabele het belangrijkst is voor de werking van het geneesmiddel en beschrijf deze in detail.__
+
+__A).__ Bij de concentratie vrije receptoren daalt de concentratie exponenteel, dit komt namelijk omdat de concentratie mRNAa ook sterk daalt en tegelijkertijd worden de vrije receptoren nog wel gebruikt
+
+__B).__ De concentratie MPL-receptoren stijgt hier in het begin enorm, dit is te verklaren omdat er in het begin nog genoeg mRNAR is om de reactie sneller te laten gaan echter op een gegeven moment wordt er een punt bereikt dat er niet meer genoeg mRNAR is waardoor er minder MPL-receptoren zullen worden gemaakt, de daling zal hier dan door gaan totdat het evenwicht is bereikt.
+
+__C).__ Voor deze concentratie geldt ongeveer het zelfde als de concentratie MPL-receptoren, echter hier heeft de concentratie MPL-receptoren direct effect op de concentratie MPL-receptoren in de celkern, hierdoor is piek bij beide ongeveer op het zelfde tijdstip en zullen ze ook ongeveer op het zelfde tijdstip hun evenwicht bereiken, deze concentratie reageert alleen slomer omdat de receptor niet in de celkern wordt gemaakt
+
+Op basis van deze resultaten zou ik zeggen dat ks_R hier het belangrijkste variable is, deze is namelijk verantwoorderlijk voor de omzetting van mRNAR en R, als deze reactie langzamer zou gaan of sneller zou gaan dan zou het hele model veranderen
+
