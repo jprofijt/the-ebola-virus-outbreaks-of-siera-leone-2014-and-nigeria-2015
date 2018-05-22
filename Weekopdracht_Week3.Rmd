@@ -23,6 +23,8 @@ data <- read.csv("MPL.csv", header = T, na.strings = "NA")
 medians <- aggregate(data[,c("MPL_conc","mRNA","Free_receptor")],list(data$dose,data$time), median, na.rm=T)
 names(medians)[1:2] <- c("dose","time")
 
+head(medians)
+
 ```
 
 ```{r}
@@ -87,79 +89,104 @@ out2 <- ode(y = state,
 
 
 ```{r}
+# Alle plots
 
 # Concentratie mRNAR
+# moet in twee
+par(mfrow = c(1,2))
 plot(out[,1], out[,2],
      type = "l", 
      xlab = "Tijd in uur",
      ylab = "fmol/g mRNAR",
-     main = "Concentratie mRNAR over 168 uur")
-lines(out2[,1], out2[,2],
-      col = "red")
-lines(medians[,2], medians[,4],
-      col = "blue",
-      type = "p",
-      lty = 3)
-legend("topright",
-       c("Dose van 39.925 ng/ml", "Dose van 14.59 ng/ml", "medians"),
-       col = c("black", "red", "blue"),
-       lty = c(1, 1, NA),
-       pch = c(NA, NA, 1))
+     ylim = c(0, 5),
+     main = "Concentratie mRNAR over 168 uur",
+     sub = "Dose van 39.925 ng/ml")
+lines(medians[,2][medians$dose == 0.3| medians$dose == 0.0], medians[,4][medians$dose == 0.3| medians$dose == 0.0],
+      col = "red",
+      type = "o",
+      lty = 1,
+      pch = 16)
 
-# Vrije glucocorticoid receptoren
-plot(out[,1], out[,3], 
-     type = "l",
+
+plot(out2[,1], out2[,2],
+     type = "l", 
      xlab = "Tijd in uur",
-     ylab = "fmol/mg vrije glucocorticoid receptoren",
-     main = "Concentratie vrije glucocorticoid receptoren over 168 uur")
-lines(out2[,1], out2[,3],
-      col = "red")
-lines(medians[,2], medians[,3],
-      col = "blue",
-      type = "p",
-      lty = 3)
-legend("topright",
-       c("Dose van 39.925 ng/ml", "Dose van 14.59 ng/ml", "medians"),
-       col = c("black", "red", "blue"),
-       lty = c(1, 1, NA),
-       pch = c(NA, NA, 1))
+     ylab = "fmol/g mRNAR",
+     ylim = c(0, 5),
+     main = "Concentratie mRNAR over 168 uur",
+     sub = "Dose van 14.59 ng/ml")
+lines(medians[,2][medians$dose == 0.1| medians$dose == 0.0], medians[,4][medians$dose == 0.1| medians$dose == 0.0],
+      col = "red",
+      type = "o",
+      lty = 1,
+      pch = 16)
 
-# Dichtheid MPL-receptoren
-# kon geen data hiervan vinden
-# plot van para 2 doet raar
-plot(out[,1], out[,4], 
-     type = "l",
-     xlab = "Tijd in uur",
-     ylab = "fmol/mg MPL-receptor complex",
-     main = "Dichtheid van het MPL-receptoren complex over 168 uur",
-     ylim = c(0,200))
-lines(out2[,1], out2[,3],
-      col = "red")
-legend("topright",
-       c("Dose van 39.925 ng/ml", "Dose van 14.59 ng/ml"),
-       col = c("black", "red"),
-       lty = 1)
-
-# MPL receptoren in de nucleus
-plot(out[,1], out[,5], 
-     type = "l",
-     xlab = "Tijd in uur", 
-     ylab = "fmol/mg MPL-receptoren complex",
-     main = "Hoeveelheid MPL-receptoren complex in de nucleus over 168 uur",
-     ylim = c(0,200))
-lines(out2[,1], out2[,3],
-      col = "red")
-lines(medians[,2], medians[,5],
-      col = "blue",
-      type = "p",
-      lty = 3)
-legend("topright",
-       c("Dose van 39.925 ng/ml", "Dose van 14.59 ng/ml", "medians"),
-       col = c("black", "red", "blue"),
-       lty = c(1, 1, NA),
-       pch = c(NA, NA, 1))
+# # Vrije glucocorticoid receptoren
+# plot(out[,1], out[,3], 
+#      type = "l",
+#      xlab = "Tijd in uur",
+#      ylab = "fmol/mg vrije glucocorticoid receptoren",
+#      main = "Concentratie vrije glucocorticoid receptoren over 168 uur")
+# lines(out2[,1], out2[,3],
+#       col = "red")
+# lines(medians[,2], medians[,3],
+#       col = "blue",
+#       type = "p",
+#       lty = 3)
+# legend("topright",
+#        c("Dose van 39.925 ng/ml", "Dose van 14.59 ng/ml", "medians"),
+#        col = c("black", "red", "blue"),
+#        lty = c(1, 1, NA),
+#        pch = c(NA, NA, 1))
+# 
+# # Dichtheid MPL-receptoren
+# # kon geen data hiervan vinden
+# # plot van para 2 doet raar
+# plot(out[,1], out[,4], 
+#      type = "l",
+#      xlab = "Tijd in uur",
+#      ylab = "fmol/mg MPL-receptor complex",
+#      main = "Dichtheid van het MPL-receptoren complex over 168 uur",
+#      ylim = c(0,200))
+# lines(out2[,1], out2[,3],
+#       col = "red")
+# legend("topright",
+#        c("Dose van 39.925 ng/ml", "Dose van 14.59 ng/ml"),
+#        col = c("black", "red"),
+#        lty = 1)
+# 
+# # MPL receptoren in de nucleus
+# plot(out[,1], out[,5], 
+#      type = "l",
+#      xlab = "Tijd in uur", 
+#      ylab = "fmol/mg MPL-receptoren complex",
+#      main = "Hoeveelheid MPL-receptoren complex in de nucleus over 168 uur",
+#      ylim = c(0,200))
+# lines(out2[,1], out2[,3],
+#       col = "red")
+# lines(medians[,2], medians[,5],
+#       col = "blue",
+#       type = "p",
+#       lty = 3)
+# legend("topright",
+#        c("Dose van 39.925 ng/ml", "Dose van 14.59 ng/ml", "medians"),
+#        col = c("black", "red", "blue"),
+#        lty = c(1, 1, NA),
+#        pch = c(NA, NA, 1))
 ```
+
+## Vragen:
+__ [1]. __
+Wij plotten hierin de test data met medianen omdat deze minder last hebben van de extreme outliers die er zouden kunnen zijn, als je hier het gemiddelde zou gebruiken dan zou deze verkeerd kunnen zijn omdat deze ook de extreme data mee zou nemen.
+
+__ [2]. __
+als de dosis verlaagt dan is het evenwicht hoger, het dal wordt dan eerder bereikt, de reactie is dus minder sterk
+
+__ [3]. __
+
+
 \pagebreak
+
 
 # __Assigment 2. simulate scenario’s__
 ```{r}
