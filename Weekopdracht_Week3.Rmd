@@ -96,13 +96,12 @@ out2 <- ode(y = state,
 
 # Concentratie mRNAR
 # moet in twee
-par(mfrow = c(1,2))
+par(mfrow = c(1,2), oma = c(0, 0, 2, 0))
 plot(out[,1], out[,2],
      type = "l", 
      xlab = "Tijd in uur",
      ylab = "fmol/g mRNAR",
      ylim = c(0, 5),
-     main = "Concentratie mRNAR over 168 uur",
      sub = "Dose van 39.925 ng/ml")
 lines(medians[,2][medians$dose == 0.3| medians$dose == 0.0], 
       medians[,4][medians$dose == 0.3| medians$dose == 0.0],
@@ -117,7 +116,6 @@ plot(out2[,1], out2[,2],
      xlab = "Tijd in uur",
      ylab = "fmol/g mRNAR",
      ylim = c(0, 5),
-     main = "Concentratie mRNAR over 168 uur",
      sub = "Dose van 14.59 ng/ml")
 lines(medians[,2][medians$dose == 0.1| medians$dose == 0.0], 
       medians[,4][medians$dose == 0.1| medians$dose == 0.0],
@@ -125,7 +123,7 @@ lines(medians[,2][medians$dose == 0.1| medians$dose == 0.0],
       type = "o",
       lty = 1,
       pch = 16)
-
+mtext("Concentratie mRNAR over 168 uur", outer = TRUE, cex = 1.5)
 # # Vrije glucocorticoid receptoren
 # plot(out[,1], out[,3], 
 #      type = "l",
@@ -272,7 +270,7 @@ plot(aangepast[,1], aangepast[,5],
      xlab = "Tijd in uur", ylab = "fmol/mg MPL-receptoren complex",
      sub = "Geen mRNA synthese")
 
-mtext("Hoeveelheid MPL-receptoren complex in de nucleus over 48 uur", outer = TRUE, cex = 1.5)
+mtext("Hoeveelheid MPL-receptor complex in de nucleus", outer = TRUE, cex = 1.5)
 ```
 [1].
 Als we de synthese van GR mRNA uit het model halen krijgen wij de hierboven gegeven grafieken. Hierien kunnen zien dat wanneer er geen synthese is van GR mRNA zal de hoeveelheid Geactiveerde MPL-receptoren dezelfde trends volgen maar ligt het evenwicht lager in de grafiek.
