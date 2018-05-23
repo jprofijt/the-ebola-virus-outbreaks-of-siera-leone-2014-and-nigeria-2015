@@ -188,7 +188,7 @@ __ [2]. __
 Door de Grafieken hierboven te vergelijken kun je de verschillen tussen de doses zien. de initiele daling van mRNA is grotendeels gelijk maar door de lagere dosis wordt er minder mRNA repressie uitgevoerd. Wanneer er meer medicijn is gegeven zal het evenwicht lager liggen dan wanneer er minder wordt gegeven ligt het evenwicht hoger. 
 
 __ [3]. __
-
+In de grafieken is te zien dat het model iets afwijkt van de data gevonden in het experiment. Oorzaken van deze verschillen kunnen zijn dat er bijvoorbeeld fouten zijn gemaakt met 
 
 \pagebreak
 
@@ -230,9 +230,13 @@ cocortisocosteroid.model <- function(time, para, state){
     )
 }
 
-cocortisocosteroid.model.aangepast <- function(time, para, state){
+# ksrm zorgt voor de synthese van GR mRNA
+# Als we deze uit de formule halen kan er geen automatishe regulatie van GR mRNA zijn
+# Dus uit formule 1 halen we ksrm zodat er geen GR mRNA synthese is.
+
+cocortisocosteroid.model.noksrm <- function(time, para, state){
     with(as.list(c(state, para)),{
-        dmRNA <- ksrm * (1 - DRN / (IC50rm + DRN)) - kdrm * Rmo
+        dmRNA <- (1 - DRN / (IC50rm + DRN)) - kdrm * Rmo
         dR <- ksr * Rmo + Rf * kre * DRN - kon * D * Ro - kdr * Ro
         dDR <- kon * D * Ro - kt * DR
         dDRN <- kt * DR - kre * DRN
@@ -245,12 +249,104 @@ cocortisocosteroid.model.aangepast <- function(time, para, state){
 normaal <- ode(y = state,
                times = time,
                parms = para,
-               func = cocortisocosteroid.model,
-               method = "euler")
+               func = cocortisocosteroid.model
+               )
 
 aangepast <- ode(y = state,
                  times = time,
                  parms = para,
-                 func = cocortisocosteroid.model,
-                 method = "euler")
+                 func = cocortisocosteroid.model.noksrm
+                 )
 ```
+
+```{r}
+par(mfrow = c(1,2), oma = c(0, 0, 2, 0))
+plot(normaal[,1], normaal[,5], 
+     type = "l",
+     xlab = "Tijd in uur", 
+     ylab = "fmol/mg MPL-receptoren complex",
+     sub = "Normale omstandigheden" )
+
+plot(aangepast[,1], aangepast[,5], 
+     type = "l",
+     xlab = "Tijd in uur", ylab = "fmol/mg MPL-receptoren complex",
+     sub = "Geen mRNA synthese")
+
+mtext("Hoeveelheid MPL-receptoren complex in de nucleus over 48 uur", outer = TRUE, cex = 1.5)
+```
+[1].
+Als we de synthese van GR mRNA uit het model halen krijgen wij de hierboven gegeven grafieken. Hierien kunnen zien dat wanneer er geen synthese is van GR mRNA zal de hoeveelheid Geactiveerde MPL-receptoren dezelfde trends volgen maar ligt het evenwicht lager in de grafiek.
+
+```{r}
+rootfun <- function(time, state, para) {
+  dstate <- unlist(cocortisocosteroid.model(time, state, para))
+  sum(abs(dstate)) - 1e-1
+}
+
+time <- seq(0, 48, 1)
+
+#parameters
+para <- c(ksrm = 2.9,
+          IC50rm = 26.2,
+          kdrm = 0.612,
+          ksr = 3.22,
+          kre = 0.57,
+          kon = 0.00329,
+          kdr = 0.0572,
+          kt = 0.63,
+          Rf = 0.49,
+          D = (20 * 1000) / 371.471 ) # verander hier de 20 om de D waarde aan te passen
+                                      # dit zet het om van ng/ml naar nmol/l
+
+#startwaardes
+state <- c(Rmo = 4.740, 
+           Ro = 267,
+           DR = 0,
+           DRN = 0)
+
+steady <- ode(y = state,
+              times = time,
+              parms = para,
+              func = cocortisocosteroid.model, 
+              rootfun = rootfun)
+
+t_steady <- tail(steady, n = 1)
+```
+
+```{r}
+time <- seq(t_steady[, 1], 200, 1)
+para <- c(ksrm = 2.9,
+          IC50rm = 26.2,
+          kdrm = 0.612,
+          ksr = 3.22,
+          kre = 0.57,
+          kon = 0.00329,
+          kdr = 0.0572,
+          kt = 0.63,
+          Rf = 0.49,
+          D = 0)
+
+state <- c(Rmo = t_steady[, 2], 
+           Ro = t_steady[, 3],
+           DR = t_steady[, 4],
+           DRN = t_steady[, 5])
+
+t_steady_2 <- ode(y = state,
+              times = time,
+              parms = para,
+              func = cocortisocosteroid.model, 
+              rootfun = rootfun)
+t_steady_second <- tail(t_steady_2, n = 1)
+total <- rbind(steady[1:35, ], t_steady_2)
+```
+
+```{r}
+plot(total[,1], total[,2],
+     type = "l", 
+     xlab = "Tijd in uur",
+     ylab = "fmol/g mRNAR",
+     main = "Concentratie mRNAR tot evenwichten zijn berijkt")
+abline(v = 34, col = "red")
+legend("bottomright", c("Concentratie", "treatment stopped"), col = 1:2, lty = 1)
+```
+
