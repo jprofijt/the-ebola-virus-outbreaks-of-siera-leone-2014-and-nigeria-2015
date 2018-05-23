@@ -280,7 +280,7 @@ Als we de synthese van GR mRNA uit het model halen krijgen wij de hierboven gege
 ```{r}
 rootfun <- function(time, state, para) {
   dstate <- unlist(cocortisocosteroid.model(time, state, para))
-  sum(abs(dstate)) - 1e-1
+  sum(abs(dstate)) - 1e-2
 }
 
 time <- seq(0, 48, 1)
@@ -337,7 +337,7 @@ t_steady_2 <- ode(y = state,
               func = cocortisocosteroid.model, 
               rootfun = rootfun)
 t_steady_second <- tail(t_steady_2, n = 1)
-total <- rbind(steady[1:35, ], t_steady_2)
+total <- rbind(steady, t_steady_2)
 ```
 
 ```{r}
@@ -346,7 +346,317 @@ plot(total[,1], total[,2],
      xlab = "Tijd in uur",
      ylab = "fmol/g mRNAR",
      main = "Concentratie mRNAR tot evenwichten zijn berijkt")
-abline(v = 34, col = "red")
+abline(v = t_steady[, "time"], col = "red")
 legend("bottomright", c("Concentratie", "treatment stopped"), col = 1:2, lty = 1)
+```
+
+```{r}
+time <- seq(0, 48, 1)
+
+#parameters
+para_kon1 <- c(ksrm = 2.9,
+          IC50rm = 26.2,
+          kdrm = 0.612,
+          ksr = 3.22,
+          kre = 0.57,
+          kon = 0.00329/5,
+          kdr = 0.0572,
+          kt = 0.63,
+          Rf = 0.49,
+          D = (20 * 1000) / 371.471 ) # verander hier de 20 om de D waarde aan te passen
+                                      # dit zet het om van ng/ml naar nmol/l
+para_kon2 <- c(ksrm = 2.9,
+          IC50rm = 26.2,
+          kdrm = 0.612,
+          ksr = 3.22,
+          kre = 0.57,
+          kon = 0.00329/2,
+          kdr = 0.0572,
+          kt = 0.63,
+          Rf = 0.49,
+          D = (20 * 1000) / 371.471 )
+
+para_kon3 <- c(ksrm = 2.9,
+          IC50rm = 26.2,
+          kdrm = 0.612,
+          ksr = 3.22,
+          kre = 0.57,
+          kon = 0.00329*2,
+          kdr = 0.0572,
+          kt = 0.63,
+          Rf = 0.49,
+          D = (20 * 1000) / 371.471 )
+
+para_kon4 <- c(ksrm = 2.9,
+          IC50rm = 26.2,
+          kdrm = 0.612,
+          ksr = 3.22,
+          kre = 0.57,
+          kon = 0.00329*5,
+          kdr = 0.0572,
+          kt = 0.63,
+          Rf = 0.49,
+          D = (20 * 1000) / 371.471 )
+
+#startwaardes
+state <- c(Rmo = 4.740, 
+           Ro = 267,
+           DR = 0,
+           DRN = 0)
+
+kon1 <- ode(y = state,
+               times = time,
+               parms = para_kon1,
+               func = cocortisocosteroid.model
+               )
+kon2 <- ode(y = state,
+               times = time,
+               parms = para_kon2,
+               func = cocortisocosteroid.model
+               )
+
+kon3 <- ode(y = state,
+               times = time,
+               parms = para_kon3,
+               func = cocortisocosteroid.model
+               )
+
+kon4 <- ode(y = state,
+               times = time,
+               parms = para_kon4,
+               func = cocortisocosteroid.model
+               )
+```
+
+```{r}
+plot(kon4[,1], kon4[,2],
+     type = "l", 
+     xlab = "Tijd in uur",
+     ylab = "fmol/g mRNAR",
+     main = "Concentratie mRNAR over 48 uur",
+     col = "purple")
+lines(kon1[,1], kon1[,2], col = "red")
+lines(kon2[,1], kon2[,2], col = "green")
+lines(kon3[,1], kon3[,2], col = "blue")
+lines(normaal[,1], normaal[,2])
+legend("topright", c("normaal", "Kon /5", "Kon /2", "Kon 2x", "Kon 5x"),  col = c("black", "red", "blue", "purple"), lty = 1)
+
+plot(kon4[,1], kon4[,3], 
+     type = "l",
+     xlab = "Tijd in uur",
+     ylab = "fmol/mg vrije glucocorticoid receptoren",
+     main = "Concentratie vrije glucocorticoid receptoren over 48 uur",
+     col = "purple")
+lines(kon1[,1], kon1[,3], col = "red")
+lines(kon2[,1], kon2[,3], col = "green")
+lines(kon3[,1], kon3[,3], col = "blue")
+lines(normaal[,1], normaal[,3])
+legend("topright", c("normaal", "Kon /5", "Kon /2", "Kon 2x", "Kon 5x"),  col = c("black", "red", "blue", "purple"), lty = 1)
+
+plot(kon4[,1], kon4[,4], 
+     type = "l",
+     xlab = "Tijd in uur",
+     ylab = "fmol/mg MPL-receptor complex",
+     main = "Dichtheid van het MPL-receptoren complex over 48 uur",
+     col = "purple")
+lines(kon1[,1], kon1[,4], col = "red")
+lines(kon2[,1], kon2[,4], col = "green")
+lines(kon3[,1], kon3[,4], col = "blue")
+lines(normaal[,1], normaal[,4])
+legend("topright", c("normaal", "Kon /5", "Kon /2", "Kon 2x", "Kon 5x"),  col = c("black", "red", "blue", "purple"), lty = 1)
+
+plot(kon4[,1], kon4[,5], 
+     type = "l",
+     xlab = "Tijd in uur", 
+     ylab = "fmol/mg MPL-receptoren complex",
+     main = "Hoeveelheid MPL-receptoren complex in de nucleus over 48 uur",
+     col = "purple")
+lines(kon1[,1], kon1[,5], col = "red")
+lines(kon2[,1], kon2[,5], col = "green")
+lines(kon3[,1], kon3[,5], col = "blue")
+lines(normaal[,1], normaal[,5])
+legend("topright", c("normaal", "Kon /5", "Kon /2", "Kon 2x", "Kon 5x"),  col = c("black", "red", "blue", "purple"), lty = 1)
+
+```
+
+```{r}
+para_Kre1 <- c(ksrm = 2.9,
+          IC50rm = 26.2,
+          kdrm = 0.612,
+          ksr = 3.22,
+          kre = 0.57/5,
+          kon = 0.00329,
+          kdr = 0.0572,
+          kt = 0.63,
+          Rf = 0.49,
+          D = (20 * 1000) / 371.471 )
+
+para_Kre2 <- c(ksrm = 2.9,
+          IC50rm = 26.2,
+          kdrm = 0.612,
+          ksr = 3.22,
+          kre = 0.57/2,
+          kon = 0.00329,
+          kdr = 0.0572,
+          kt = 0.63,
+          Rf = 0.49,
+          D = (20 * 1000) / 371.471 )
+
+para_Kre3 <- c(ksrm = 2.9,
+          IC50rm = 26.2,
+          kdrm = 0.612,
+          ksr = 3.22,
+          kre = 0.57*2,
+          kon = 0.00329,
+          kdr = 0.0572,
+          kt = 0.63,
+          Rf = 0.49,
+          D = (20 * 1000) / 371.471 )
+
+para_Kre4 <- c(ksrm = 2.9,
+          IC50rm = 26.2,
+          kdrm = 0.612,
+          ksr = 3.22,
+          kre = 0.57*5,
+          kon = 0.00329,
+          kdr = 0.0572,
+          kt = 0.63,
+          Rf = 0.49,
+          D = (20 * 1000) / 371.471 )
+
+Kre1 <- ode(y = state,
+               times = time,
+               parms = para_Kre1,
+               func = cocortisocosteroid.model
+               )
+Kre2 <- ode(y = state,
+               times = time,
+               parms = para_Kre2,
+               func = cocortisocosteroid.model
+               )
+
+Kre3 <- ode(y = state,
+               times = time,
+               parms = para_Kre3,
+               func = cocortisocosteroid.model
+               )
+
+Kre4 <- ode(y = state,
+               times = time,
+               parms = para_Kre4,
+               func = cocortisocosteroid.model
+               )
+```
+
+```{r}
+plot(Kre1[,1], Kre1[,2],
+     type = "l", 
+     xlab = "Tijd in uur",
+     ylab = "fmol/g mRNAR",
+     main = "Concentratie mRNAR over 48 uur",
+     col = "red")
+lines(Kre4[,1], Kre4[,2], col = "purple")
+lines(Kre2[,1], Kre2[,2], col = "green")
+lines(Kre3[,1], Kre3[,2], col = "blue")
+lines(normaal[,1], normaal[,2])
+legend("topright", c("normaal", "Kre /5", "Kre /2", "Kre 2x", "Kre 5x"),  col = c("black", "red", "blue", "purple"), lty = 1)
+
+plot(Kre1[,1], Kre1[,3], 
+     type = "l",
+     xlab = "Tijd in uur",
+     ylab = "fmol/mg vrije glucocorticoid receptoren",
+     main = "Concentratie vrije glucocorticoid receptoren over 48 uur",
+     col = "red")
+lines(Kre4[,1], Kre4[,3], col = "purple")
+lines(Kre2[,1], Kre2[,3], col = "green")
+lines(Kre3[,1], Kre3[,3], col = "blue")
+lines(normaal[,1], normaal[,3])
+legend("topright", c("normaal", "Kre /5", "Kre /2", "Kre 2x", "Kre 5x"),  col = c("black", "red", "blue", "purple"), lty = 1)
+
+plot(Kre4[,1], Kre4[,4], 
+     type = "l",
+     xlab = "Tijd in uur",
+     ylab = "fmol/mg MPL-receptor complex",
+     main = "Dichtheid van het MPL-receptoren complex over 48 uur",
+     col = "purple")
+lines(Kre1[,1], Kre1[,4], col = "red")
+lines(Kre2[,1], Kre2[,4], col = "green")
+lines(Kre3[,1], Kre3[,4], col = "blue")
+lines(normaal[,1], normaal[,4])
+legend("topright", c("normaal", "Kre /5", "Kre /2", "Kre 2x", "Kre 5x"),  col = c("black", "red", "blue", "purple"), lty = 1)
+
+plot(Kre1[,1], Kre1[,5], 
+     type = "l",
+     xlab = "Tijd in uur", 
+     ylab = "fmol/mg MPL-receptoren complex",
+     main = "Hoeveelheid MPL-receptoren complex in de nucleus over 48 uur",
+     col = "red")
+lines(Kre4[,1], Kre4[,5], col = "purple")
+lines(Kre2[,1], Kre2[,5], col = "green")
+lines(Kre3[,1], Kre3[,5], col = "blue")
+lines(normaal[,1], normaal[,5])
+legend("topright", c("normaal", "Kre /5", "Kre /2", "Kre 2x", "Kre 5x"),  col = c("black", "red", "blue", "purple"), lty = 1)
+```
+
+[4]
+```{r}
+# ks_r zorgt voor de synthese van de reseptor dus deze moet uit op 0 staan om een geblokeerde synthese te symuleren
+time <- seq(0, 48, 1)
+
+para <- c(ksrm = 2.9,
+          IC50rm = 26.2,
+          kdrm = 0.612,
+          ksr = 0,
+          kre = 0.57,
+          kon = 0.00329,
+          kdr = 0.0572,
+          kt = 0.63,
+          Rf = 0.49,
+          D = (20 * 1000) / 371.471 )
+
+state <- c(Rmo = 4.740, 
+           Ro = 267,
+           DR = 0,
+           DRN = 0)
+
+blocked_synthese <- ode(y = state,
+               times = time,
+               parms = para,
+               func = cocortisocosteroid.model
+               )
+```
+
+```{r}
+plot(normaal[,1], normaal[,2],
+     type = "l", 
+     xlab = "Tijd in uur",
+     ylab = "fmol/g mRNAR",
+     main = "Concentratie mRNAR over 48 uur")
+lines(blocked_synthese[,1], blocked_synthese[,2], col = "red")
+plot(blocked_synthese[,1], blocked_synthese[,3], 
+     type = "l",
+     xlab = "Tijd in uur",
+     ylab = "fmol/mg vrije glucocorticoid receptoren",
+     main = "Concentratie vrije glucocorticoid receptoren over 48 uur",
+     col = "red")
+lines(normaal[,1], normaal[,3])
+plot(normaal[,1], normaal[,4], 
+     type = "l",
+     xlab = "Tijd in uur",
+     ylab = "fmol/mg MPL-receptor complex",
+     main = "Dichtheid van het MPL-receptoren complex over 48 uur")
+lines(blocked_synthese[,1], blocked_synthese[,4], col = "red")
+
+plot(normaal[,1], normaal[,5], 
+     type = "l",
+     xlab = "Tijd in uur", 
+     ylab = "fmol/mg MPL-receptoren complex",
+     main = "Hoeveelheid MPL-receptoren complex in de nucleus over 48 uur")
+lines(blocked_synthese[,1], blocked_synthese[,5], col = "red")
+```
+
+[5]
+```{r}
+
 ```
 
