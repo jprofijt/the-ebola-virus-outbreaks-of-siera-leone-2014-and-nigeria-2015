@@ -14,7 +14,7 @@ rm(list = ls())
 library(deSolve)
 ```
 
-# __Assignment 1. assess model validity__
+# Assignment 1. assess model validity
 
 
 ```{r}
@@ -26,26 +26,7 @@ names(medians)[1:2] <- c("dose","time")
 
 head(medians)
 
-```
-
-```{r}
-#tijd is voor zeven dagen, 24 * 7
-time <- seq(0, 168, 1)
-
-#parameters
-para2 <- c(ksrm = 2.9,
-          IC50rm = 26.2,
-          kdrm = 0.612,
-          ksr = 3.22,
-          kre = 0.57,
-          kon = 0.00329,
-          kdr = 0.0572,
-          kt = 0.63,
-          Rf = 0.49,
-          D = (14.59 * 1000) / 371.471 ) 
-# verander hier de 20 om de D waarde aan te passen
-# dit zet het om van ng/ml naar nmol/l
-
+# template parameters
 para <- c(ksrm = 2.9,
           IC50rm = 26.2,
           kdrm = 0.612,
@@ -55,9 +36,19 @@ para <- c(ksrm = 2.9,
           kdr = 0.0572,
           kt = 0.63,
           Rf = 0.49,
-          D = (39.925 * 1000) / 371.471 ) 
-# verander hier de 20 om de D waarde aan te passen
-# dit zet het om van ng/ml naar nmol/l
+          D = (20 * 1000) / 371.471 )
+```
+
+```{r}
+#tijd is voor zeven dagen, 24 * 7
+time <- seq(0, 168, 1)
+
+# parameters
+# D wordt hier aangepast voor de verschillende parameters
+low_dose <- para
+high_dose <- para
+low_dose["D"] <- ((14.59 * 1000) / 371.471)
+high_dose["D"] <- ((39.925 * 1000) / 371.471)
 
 #startwaardes
 state <- c(Rmo = 4.740, 
@@ -79,23 +70,20 @@ cocortisocosteroid.model <- function(time, para, state){
 
 out <- ode(y = state,
            times = time,
-           parms = para,
+           parms = high_dose,
            func = cocortisocosteroid.model,
            method = "euler")
 
 out2 <- ode(y = state,
            times = time,
-           parms = para2,
+           parms = low_dose,
            func = cocortisocosteroid.model,
            method = "euler")
 ```
 
 
 ```{r}
-# Alle plots
-
 # Concentratie mRNAR
-# moet in twee
 par(mfrow = c(1,2), oma = c(0, 0, 2, 0))
 plot(out[,1], out[,2],
      type = "l", 
@@ -123,92 +111,37 @@ lines(medians[,2][medians$dose == 0.1| medians$dose == 0.0],
       type = "o",
       lty = 1,
       pch = 16)
-mtext("Concentratie mRNAR over 168 uur", outer = TRUE, cex = 1.5)
-# # Vrije glucocorticoid receptoren
-# plot(out[,1], out[,3], 
-#      type = "l",
-#      xlab = "Tijd in uur",
-#      ylab = "fmol/mg vrije glucocorticoid receptoren",
-#      main = "Concentratie vrije glucocorticoid receptoren over 168 uur")
-# lines(out2[,1], out2[,3],
-#       col = "red")
-# lines(medians[,2], medians[,3],
-#       col = "blue",
-#       type = "p",
-#       lty = 3)
-# legend("topright",
-#        c("Dose van 39.925 ng/ml", "Dose van 14.59 ng/ml", "medians"),
-#        col = c("black", "red", "blue"),
-#        lty = c(1, 1, NA),
-#        pch = c(NA, NA, 1))
-# 
-# # Dichtheid MPL-receptoren
-# # kon geen data hiervan vinden
-# # plot van para 2 doet raar
-# plot(out[,1], out[,4], 
-#      type = "l",
-#      xlab = "Tijd in uur",
-#      ylab = "fmol/mg MPL-receptor complex",
-#      main = "Dichtheid van het MPL-receptoren complex over 168 uur",
-#      ylim = c(0,200))
-# lines(out2[,1], out2[,3],
-#       col = "red")
-# legend("topright",
-#        c("Dose van 39.925 ng/ml", "Dose van 14.59 ng/ml"),
-#        col = c("black", "red"),
-#        lty = 1)
-# 
-# # MPL receptoren in de nucleus
-# plot(out[,1], out[,5], 
-#      type = "l",
-#      xlab = "Tijd in uur", 
-#      ylab = "fmol/mg MPL-receptoren complex",
-#      main = "Hoeveelheid MPL-receptoren complex in de nucleus over 168 uur",
-#      ylim = c(0,200))
-# lines(out2[,1], out2[,3],
-#       col = "red")
-# lines(medians[,2], medians[,5],
-#       col = "blue",
-#       type = "p",
-#       lty = 3)
-# legend("topright",
-#        c("Dose van 39.925 ng/ml", "Dose van 14.59 ng/ml", "medians"),
-#        col = c("black", "red", "blue"),
-#        lty = c(1, 1, NA),
-#        pch = c(NA, NA, 1))
-```
 
-## Vragen:
-__ [1]. __
+mtext("Concentratie mRNAR over 168 uur", outer = TRUE, cex = 1.5)
+```
+__Vragen__:
+
+##__[1]. Why is it best practice to plot the median for the experimental data? Explain in your report__
+
 Wij plotten hierin de test data met medianen omdat deze minder last hebben van de extreme outliers die er zouden kunnen zijn, als je hier het gemiddelde zou gebruiken dan zou deze verkeerd kunnen zijn omdat deze ook de extreme data mee zou nemen.
 
-__ [2]. __
+&nbsp;
+
+##__[2]. How do the results of the simulations depend on the dose and concentration of the drug? Compare the model variables mRNA, R with the experimental data by running the simulations adjusting dosis D and plot these to find the answer.__
+
 Door de Grafieken hierboven te vergelijken kun je de verschillen tussen de doses zien. de initiele daling van mRNA is grotendeels gelijk maar door de lagere dosis wordt er minder mRNA repressie uitgevoerd. Wanneer er meer medicijn is gegeven zal het evenwicht lager liggen dan wanneer er minder wordt gegeven ligt het evenwicht hoger. 
 
-__ [3]. __
+&nbsp;
+
+##__[3]. Are the results of the model in line with experimental data? If not, what could be the reason? Think of at least one explanation. Try to test it with simulations (you will get bonus points for that, your explanation does not need to be correct, but should be logical).__
+
 In de grafieken is te zien dat het model iets afwijkt van de data gevonden in het experiment. Oorzaken van deze verschillen kunnen zijn dat er bijvoorbeeld fouten zijn gemaakt met 
 
 \pagebreak
 
 
-# __Assigment 2. simulate scenario’s__
+# Assignment 2. simulate scenario’s
 ```{r}
 # waarden voor de normale simulaties
 # tijdspan
 time <- seq(0, 48, 1)
 
-#parameters
-para <- c(ksrm = 2.9,
-          IC50rm = 26.2,
-          kdrm = 0.612,
-          ksr = 3.22,
-          kre = 0.57,
-          kon = 0.00329,
-          kdr = 0.0572,
-          kt = 0.63,
-          Rf = 0.49,
-          D = (20 * 1000) / 371.471 ) # verander hier de 20 om de D waarde aan te passen
-                                      # dit zet het om van ng/ml naar nmol/l
+# parameters staan al in code block 1
 
 #startwaardes
 state <- c(Rmo = 4.740, 
@@ -272,7 +205,11 @@ plot(aangepast[,1], aangepast[,5],
 
 mtext("Hoeveelheid MPL-receptor complex in de nucleus", outer = TRUE, cex = 1.5)
 ```
-[1].
+
+\pagebreak
+
+##__[1]. What would be the time course concentration of the activated drug-receptor complex if there was no auto-regulation of glucocorticoid receptor, i.e. if there was not effect of drug on the synthesis of the receptor mRNA? What formula needs to be changed? Adjust the model, run the simulation and plot the results to find out.__
+
 Als we de synthese van GR mRNA uit het model halen krijgen wij de hierboven gegeven grafieken. Hierien kunnen zien dat wanneer er geen synthese is van GR mRNA zal de hoeveelheid Geactiveerde MPL-receptoren dezelfde trends volgen maar ligt het evenwicht lager in de grafiek.
 
 ```{r}
@@ -283,18 +220,7 @@ rootfun <- function(time, state, para) {
 
 time <- seq(0, 48, 1)
 
-#parameters
-para <- c(ksrm = 2.9,
-          IC50rm = 26.2,
-          kdrm = 0.612,
-          ksr = 3.22,
-          kre = 0.57,
-          kon = 0.00329,
-          kdr = 0.0572,
-          kt = 0.63,
-          Rf = 0.49,
-          D = (20 * 1000) / 371.471 ) # verander hier de 20 om de D waarde aan te passen
-                                      # dit zet het om van ng/ml naar nmol/l
+# parameters staan in code block 1
 
 #startwaardes
 state <- c(Rmo = 4.740, 
@@ -313,7 +239,7 @@ t_steady <- tail(steady, n = 1)
 
 ```{r}
 time <- seq(t_steady[, 1], 200, 1)
-para <- c(ksrm = 2.9,
+end_treatment <- c(ksrm = 2.9,
           IC50rm = 26.2,
           kdrm = 0.612,
           ksr = 3.22,
@@ -331,7 +257,7 @@ state <- c(Rmo = t_steady[, 2],
 
 t_steady_2 <- ode(y = state,
               times = time,
-              parms = para,
+              parms = end_treatment,
               func = cocortisocosteroid.model, 
               rootfun = rootfun)
 t_steady_second <- tail(t_steady_2, n = 1)
@@ -347,6 +273,8 @@ plot(total[,1], total[,2],
 abline(v = t_steady[, "time"], col = "red")
 legend("bottomright", c("Concentratie", "treatment stopped"), col = 1:2, lty = 1)
 ```
+
+##__[2].__
 
 ```{r}
 time <- seq(0, 48, 1)
@@ -477,6 +405,8 @@ legend("topright", c("normaal", "Kon /5", "Kon /2", "Kon 2x", "Kon 5x"),  col = 
 
 ```
 
+## __[3].__
+
 ```{r}
 para_Kre1 <- c(ksrm = 2.9,
           IC50rm = 26.2,
@@ -557,7 +487,10 @@ lines(Kre4[,1], Kre4[,2], col = "purple")
 lines(Kre2[,1], Kre2[,2], col = "green")
 lines(Kre3[,1], Kre3[,2], col = "blue")
 lines(normaal[,1], normaal[,2])
-legend("topright", c("normaal", "Kre /5", "Kre /2", "Kre 2x", "Kre 5x"),  col = c("black", "red", "blue", "purple"), lty = 1)
+legend("topright",
+       c("normaal", "Kre /5", "Kre /2", "Kre 2x", "Kre 5x"),
+       col = c("black", "red", "blue", "purple"),
+       lty = 1)
 
 plot(Kre1[,1], Kre1[,3], 
      type = "l",
@@ -569,7 +502,10 @@ lines(Kre4[,1], Kre4[,3], col = "purple")
 lines(Kre2[,1], Kre2[,3], col = "green")
 lines(Kre3[,1], Kre3[,3], col = "blue")
 lines(normaal[,1], normaal[,3])
-legend("topright", c("normaal", "Kre /5", "Kre /2", "Kre 2x", "Kre 5x"),  col = c("black", "red", "blue", "purple"), lty = 1)
+legend("topright", 
+       c("normaal", "Kre /5", "Kre /2", "Kre 2x", "Kre 5x"), 
+       col = c("black", "red", "blue", "purple"),
+       lty = 1)
 
 plot(Kre4[,1], Kre4[,4], 
      type = "l",
@@ -581,7 +517,10 @@ lines(Kre1[,1], Kre1[,4], col = "red")
 lines(Kre2[,1], Kre2[,4], col = "green")
 lines(Kre3[,1], Kre3[,4], col = "blue")
 lines(normaal[,1], normaal[,4])
-legend("topright", c("normaal", "Kre /5", "Kre /2", "Kre 2x", "Kre 5x"),  col = c("black", "red", "blue", "purple"), lty = 1)
+legend("topright", 
+       c("normaal", "Kre /5", "Kre /2", "Kre 2x", "Kre 5x"),
+       col = c("black", "red", "blue", "purple"),
+       lty = 1)
 
 plot(Kre1[,1], Kre1[,5], 
      type = "l",
@@ -593,10 +532,13 @@ lines(Kre4[,1], Kre4[,5], col = "purple")
 lines(Kre2[,1], Kre2[,5], col = "green")
 lines(Kre3[,1], Kre3[,5], col = "blue")
 lines(normaal[,1], normaal[,5])
-legend("topright", c("normaal", "Kre /5", "Kre /2", "Kre 2x", "Kre 5x"),  col = c("black", "red", "blue", "purple"), lty = 1)
+legend("topright",
+       c("normaal", "Kre /5", "Kre /2", "Kre 2x", "Kre 5x"), 
+       col = c("black", "red", "blue", "purple"),
+       lty = 1)
 ```
 
-[4]
+##__[4]. What would happen if the synthesis of the receptor was completely blocked? Which parameter needs to be put to zero? Adjust the parameter, run the simulations and plot the results.__
 ```{r}
 # ks_r zorgt voor de synthese van de reseptor dus deze moet uit op 0 staan om een geblokeerde synthese te symuleren
 time <- seq(0, 48, 1)
@@ -631,6 +573,9 @@ plot(normaal[,1], normaal[,2],
      ylab = "fmol/g mRNAR",
      main = "Concentratie mRNAR over 48 uur")
 lines(blocked_synthese[,1], blocked_synthese[,2], col = "red")
+```
+
+```{r}
 plot(blocked_synthese[,1], blocked_synthese[,3], 
      type = "l",
      xlab = "Tijd in uur",
@@ -638,13 +583,18 @@ plot(blocked_synthese[,1], blocked_synthese[,3],
      main = "Concentratie vrije glucocorticoid receptoren over 48 uur",
      col = "red")
 lines(normaal[,1], normaal[,3])
+```
+
+```{r}
 plot(normaal[,1], normaal[,4], 
      type = "l",
      xlab = "Tijd in uur",
      ylab = "fmol/mg MPL-receptor complex",
      main = "Dichtheid van het MPL-receptoren complex over 48 uur")
 lines(blocked_synthese[,1], blocked_synthese[,4], col = "red")
+```
 
+```{r}
 plot(normaal[,1], normaal[,5], 
      type = "l",
      xlab = "Tijd in uur", 
@@ -653,8 +603,106 @@ plot(normaal[,1], normaal[,5],
 lines(blocked_synthese[,1], blocked_synthese[,5], col = "red")
 ```
 
-[5]
+##__[5].What is the dynamic of the system when the baseline rate of production of mRNA of the receptor is increased or decreased 2 or 5 fold (recalculate the rate of mRNA degradation so that the steady-state assumption at baseline (without the drug) is still valid, i.e. mRNA levels are constant when there is not drug)? Mind you: ks_Rm values should be changed, but we know that if without the drug the system is at steady-state then kd_Rm = ks_Rm/Rm0. Therefore if we change ks_Rm we need to change kd_Rm as well. Also after we recalculate the value of kd_Rm for the baseline conditions, the simulations should be run with drug present. Simulations should be run for 4 different scenarios:__
+
+    ks_Rm = 2.9/5 and kd_Rm=2.9/5/4.74
+    ks_Rm = 2.9/2 and kd_Rm=2.9/2/4.74
+    ks_Rm = 2.9*2 and kd_Rm=2.9*2/4.74
+    ks_Rm = 2.9*5 and kd_Rm=2.9*5/4.74
+    
 ```{r}
+para1 <- c(ksrm = 2.9  / 5,
+          IC50rm = 26.2,
+          kdrm = 2.9 / 5 / 4.74,
+          ksr = 3.22,
+          kre = 0.57,
+          kon = 0.00329,
+          kdr = 0.0572,
+          kt = 0.63,
+          Rf = 0.49,
+          D = (20 * 1000) / 371.471 )
+
+para2 <- c(ksrm = 2.9 / 2,
+          IC50rm = 26.2,
+          kdrm = 2.9 / 2 / 4.74,
+          ksr = 3.22,
+          kre = 0.57,
+          kon = 0.00329,
+          kdr = 0.0572,
+          kt = 0.63,
+          Rf = 0.49,
+          D = (39.925 * 1000) / 371.471 )
+
+para3 <- c(ksrm = 2.9 * 5,
+          IC50rm = 26.2,
+          kdrm = 2.9 * 5 / 4.74,
+          ksr = 3.22,
+          kre = 0.57,
+          kon = 0.00329,
+          kdr = 0.0572,
+          kt = 0.63,
+          Rf = 0.49,
+          D = (39.925 * 1000) / 371.471 )
+
+para4 <- c(ksrm = 2.9 * 2,
+          IC50rm = 26.2,
+          kdrm = 2.9 * 2 / 4.74,
+          ksr = 3.22,
+          kre = 0.57,
+          kon = 0.00329,
+          kdr = 0.0572,
+          kt = 0.63,
+          Rf = 0.49,
+          D = (39.925 * 1000) / 371.471 )
+
+ks_rm1 <- ode(y = state,
+            times = time,
+            parms = para1,
+            func = cocortisocosteroid.model
+            )
+
+ks_rm2 <- ode(y = state,
+            times = time,
+            parms = para2,
+            func = cocortisocosteroid.model
+            )
+
+ks_rm3 <- ode(y = state,
+            times = time,
+            parms = para3,
+            func = cocortisocosteroid.model
+            )
+
+ks_rm4 <- ode(y = state,
+            times = time,
+            parms = para4,
+            func = cocortisocosteroid.model
+            )
+```
+
+```{r}
+plot(ks_rm4[,1], ks_rm4[,2],
+     type = "l",
+     xlab = "Tijd in uren",
+     ylab = "fmol/g mRNAR",
+     main = "mRNAR concentratie over tijd")
+
+lines(ks_rm1[,1], ks_rm1[,2],
+      col = "red")
+lines(ks_rm2[,1], ks_rm2[,2],
+      col = "blue")
+lines(ks_rm3[,1], ks_rm3[,2],
+      col = "green")
+
+legend("topright",
+       c("ks_Rm = 2.9/5 and kd_Rm=2.9/5/4.74", 
+         "ks_Rm = 2.9/2 and kd_Rm=2.9/2/4.74", 
+         "ks_Rm = 2.9*2 and kd_Rm=2.9*2/4.74",
+         "ks_Rm = 2.9*5 and kd_Rm=2.9*5/4.74"),
+       col = c("green", "red", "blue", "black"),
+       lty = 1)
+
+
 
 ```
 
