@@ -84,6 +84,7 @@ out2 <- ode(y = state,
 
 ```{r}
 # Concentratie mRNAR
+#moet ook nog vrije receptoren bij
 par(mfrow = c(1,2), oma = c(0, 0, 2, 0))
 plot(out[,1], out[,2],
      type = "l", 
@@ -113,7 +114,37 @@ lines(medians[,2][medians$dose == 0.1| medians$dose == 0.0],
       pch = 16)
 
 mtext("Concentratie mRNAR over 168 uur", outer = TRUE, cex = 1.5)
+
+par(mfrow = c(1,2), oma = c(0, 0, 2, 0))
+plot(out[,1], out[,3],
+     type = "l", 
+     xlab = "Tijd in uur",
+     ylab = "fmol/g vrije receptoren",
+     ylim = c(0, 300),
+     sub = "Dose van 39.925 ng/ml")
+lines(medians[,2][medians$dose == 0.3| medians$dose == 0.0], 
+      medians[,5][medians$dose == 0.3| medians$dose == 0.0],
+      col = "red",
+      type = "o",
+      lty = 1,
+      pch = 16)
+
+plot(out2[,1], out2[,3],
+     type = "l", 
+     xlab = "Tijd in uur",
+     ylab = "fmol/g vrije receptoren",
+     ylim = c(0, 300),
+     sub = "Dose van 14.59 ng/ml")
+lines(medians[,2][medians$dose == 0.1| medians$dose == 0.0], 
+      medians[,5][medians$dose == 0.1| medians$dose == 0.0],
+      col = "red",
+      type = "o",
+      lty = 1,
+      pch = 16)
+
+mtext("Hoeveelheid vrije receptoren over 168 uur", outer = TRUE, cex = 1.5)
 ```
+
 __Vragen__:
 
 ##__[1]. Why is it best practice to plot the median for the experimental data? Explain in your report__
@@ -265,6 +296,9 @@ total <- rbind(steady, t_steady_2)
 ```
 
 ```{r}
+
+# vrij receptoren moeten er nog in alles
+par(mfrow = c(2,2))
 plot(total[,1], total[,2],
      type = "l", 
      xlab = "Tijd in uur",
@@ -272,6 +306,12 @@ plot(total[,1], total[,2],
      main = "Concentratie mRNAR tot evenwichten zijn berijkt")
 abline(v = t_steady[, "time"], col = "red")
 legend("bottomright", c("Concentratie", "treatment stopped"), col = 1:2, lty = 1)
+
+plot(total[,1], total[,3],
+     type = "l",
+     xlab = "Tijd in uur",
+     ylab = "fmol/g vrije receptoren",
+     main = "Hoeveelheid vrije receptoren")
 ```
 
 ##__[2].__
@@ -603,7 +643,8 @@ plot(normaal[,1], normaal[,5],
 lines(blocked_synthese[,1], blocked_synthese[,5], col = "red")
 ```
 
-##__[5].What is the dynamic of the system when the baseline rate of production of mRNA of the receptor is increased or decreased 2 or 5 fold (recalculate the rate of mRNA degradation so that the steady-state assumption at baseline (without the drug) is still valid, i.e. mRNA levels are constant when there is not drug)? Mind you: ks_Rm values should be changed, but we know that if without the drug the system is at steady-state then kd_Rm = ks_Rm/Rm0. Therefore if we change ks_Rm we need to change kd_Rm as well. Also after we recalculate the value of kd_Rm for the baseline conditions, the simulations should be run with drug present. Simulations should be run for 4 different scenarios:__
+##[5].
+__What is the dynamic of the system when the baseline rate of production of mRNA of the receptor is increased or decreased 2 or 5 fold (recalculate the rate of mRNA degradation so that the steady-state assumption at baseline (without the drug) is still valid, i.e. mRNA levels are constant when there is not drug)? Mind you: ks_Rm values should be changed, but we know that if without the drug the system is at steady-state then kd_Rm = ks_Rm/Rm0. Therefore if we change ks_Rm we need to change kd_Rm as well. Also after we recalculate the value of kd_Rm for the baseline conditions, the simulations should be run with drug present. Simulations should be run for 4 different scenarios:__
 
     ks_Rm = 2.9/5 and kd_Rm=2.9/5/4.74
     ks_Rm = 2.9/2 and kd_Rm=2.9/2/4.74
@@ -695,14 +736,12 @@ lines(ks_rm3[,1], ks_rm3[,2],
       col = "green")
 
 legend("topright",
-       c("ks_Rm = 2.9/5 and kd_Rm=2.9/5/4.74", 
-         "ks_Rm = 2.9/2 and kd_Rm=2.9/2/4.74", 
-         "ks_Rm = 2.9*2 and kd_Rm=2.9*2/4.74",
-         "ks_Rm = 2.9*5 and kd_Rm=2.9*5/4.74"),
+       c("ks_Rm = 2.9/5 en kd_Rm=2.9/5/4.74", 
+         "ks_Rm = 2.9/2 en kd_Rm=2.9/2/4.74", 
+         "ks_Rm = 2.9*2 en kd_Rm=2.9*2/4.74",
+         "ks_Rm = 2.9*5 en kd_Rm=2.9*5/4.74"),
        col = c("green", "red", "blue", "black"),
        lty = 1)
-
-
-
 ```
 
+In de plot hierboven kun je zien dat
