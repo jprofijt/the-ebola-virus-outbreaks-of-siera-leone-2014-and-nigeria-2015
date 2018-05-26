@@ -6,13 +6,17 @@ output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, cache = T)
 ```
 
 ```{r, echo=F, warning=F}
 rm(list = ls())
 library(deSolve)
 ```
+
+\tableofcontents
+
+\pagebreak
 
 # Assignment 1. assess model validity
 
@@ -158,6 +162,8 @@ legend("topright",
 
 mtext("Hoeveelheid vrije receptoren over 168 uur", outer = TRUE, cex = 1.5)
 ```
+
+\pagebreak
 
 __Vragen__:
 
@@ -679,6 +685,8 @@ plot(normaal[,1], normaal[,5],
 lines(blocked_synthese[,1], blocked_synthese[,5], col = "red")
 ```
 
+\pagebreak
+
 ##[5].
 __What is the dynamic of the system when the baseline rate of production of mRNA of the receptor is increased or decreased 2 or 5 fold (recalculate the rate of mRNA degradation so that the steady-state assumption at baseline (without the drug) is still valid, i.e. mRNA levels are constant when there is not drug)? Mind you: ks_Rm values should be changed, but we know that if without the drug the system is at steady-state then kd_Rm = ks_Rm/Rm0. Therefore if we change ks_Rm we need to change kd_Rm as well. Also after we recalculate the value of kd_Rm for the baseline conditions, the simulations should be run with drug present. Simulations should be run for 4 different scenarios:__
 
@@ -688,6 +696,8 @@ __What is the dynamic of the system when the baseline rate of production of mRNA
     ks_Rm = 2.9*5 and kd_Rm=2.9*5/4.74
     
 ```{r}
+time <- seq(0, 96, 1)
+
 para1 <- para
 para1["ksrm"] <- (2.9  / 5) 
 para1["kdrm"] <- (2.9 / 5 / 4.74)
@@ -707,7 +717,6 @@ para4 <- para
 para4["ksrm"] <- (2.9 * 2) 
 para4["kdrm"] <- (2.9 * 2 / 4.74)
 #para4["D"] <-((0 * 1000) / 371.471 )
-
 
 no_drug <- para
 no_drug["ksrm"] <- (2.9 * 2)
@@ -743,6 +752,12 @@ no_drug1 <- ode(y = state,
             parms = no_drug,
             func = cocortisocosteroid.model
             )
+
+normaal <- ode(y = state,
+            times = time,
+            parms = para,
+            func = cocortisocosteroid.model
+            )
 ```
 
 ```{r}
@@ -760,15 +775,19 @@ lines(ks_rm3[,1], ks_rm3[,2],
       col = "green")
 lines(no_drug1[,1], no_drug1[,2],
       col = "purple")
+lines(normaal[,1], normaal[,2],
+      col = "orange")
 
 legend("bottomright",
-       c("ks_Rm = 2.9/5 en kd_Rm=2.9/5/4.74", 
-         "ks_Rm = 2.9/2 en kd_Rm=2.9/2/4.74", 
-         "ks_Rm = 2.9*2 en kd_Rm=2.9*2/4.74",
-         "ks_Rm = 2.9*5 en kd_Rm=2.9*5/4.74",
-         "geen medicijn, ks_Rm = 2.9*2 en kd_Rm=2.9*2/4.74"),
-       col = c("green", "red", "blue", "black", "purple"),
+       c("ks_Rm = 2.9 / 5 en kd_Rm = 2.9 / 5 / 4.74", 
+         "ks_Rm = 2.9 / 2 en kd_Rm = 2.9 / 2 / 4.74", 
+         "ks_Rm = 2.9 * 2 en kd_Rm = 2.9 * 2 / 4.74",
+         "ks_Rm = 2.9 * 5 en kd_Rm = 2.9 * 5 / 4.74",
+         "geen medicijn, ks_Rm = 2.9 * 2 en kd_Rm=2.9 * 2 / 4.74",
+         "normaal"),
+       col = c("green", "red", "blue", "black", "purple", "orange"),
        lty = 1,
        cex = 0.75)
 ```
-In de plot hierboven kun je zien dat 
+
+In de plot hierboven kun je zien dat de mRNAR concentratie op dezelfde startwaarden blijft als er geen medicijnen zijn, ook al is de ks_rm waarde en de kd_rm waarde verandert. In deze plot is ook te zien dat zodra je de ks_rm en de kd_rm met 5 vermedigvuldig of met 5 deelt dat het model dan sneller zijn evenwicht bereikt, het zal dan ook een dieper diepte punt hebben. dit is juist andersom als je het vermedigvuldigd met 2 of deelt met 2, dan zal het juist een minder diep diepte punt hebben maar het zal langzamer zijn evenwicht bereiken.

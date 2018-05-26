@@ -54,5 +54,5 @@ DeSolve is een pakket waarmee je gemakkelijk differentiaalvergelijkingen kunt op
 
 1. Glucocorticoids , Wikipedia, 24 mei 2018, [https://en.wikipedia.org/wiki/Glucocorticoid](https://en.wikipedia.org/wiki/Glucocorticoid)
 2. R (programming language), Wikipedia, 24 mei 2018, [https://en.wikipedia.org/wiki/R_(programming_language)](https://en.wikipedia.org/wiki/R_(programming_language))
-3. CRAN - Package deSolve, 
+3. CRAN - Package deSolve, 9 mei 2018, [https://cran.r-project.org/web/packages/deSolve/index.html](https://cran.r-project.org/web/packages/deSolve/index.html) 
 
