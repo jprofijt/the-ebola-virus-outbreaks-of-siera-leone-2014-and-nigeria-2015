@@ -1,0 +1,58 @@
+---
+title: "Verslag Glucocorticoids"
+author: "Rinze-Pieter Jonker & Jouke Profijt"
+date: "26-5-2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache = T)
+```
+
+```{r, echo = F, message = F}
+rm(list = ls())
+library(deSolve)
+```
+
+\tableofcontents
+
+\pagebreak
+
+# Inleiding
+
+* Moeten nog een reden in komen waarom we het onderzoek doen
+
+Corticosteroïden zijn steroïdhormonen die worden gebruikt tegen ontstekingen en infecties. Dit steroïdhormoon wordt  gemaakt in de bijnier en bestaat voornamelijk uit twee groepen, glucocorticosteroïden en mineralocorticosteroïden. De meeste corticosteroïden die worden gebruikt zijn glucocorticosteroïden, daarom zal hier ook grotendeels alleen uitleg staan over Glucocostreroïden. Deze corticosteroiden worden veel gebruikt tegen aandoeningen, zoals asma. De glucocorticosteroïden werken door ontstekingsremmende genen te activeren en de expressie genen die ontstekkingen laten onstaan te induceren. [1]
+
+\pagebreak
+
+# Materiaal en Methoden
+
+* Wist niet helemaal wat ik hier in moest zetten, als materiaal hier niet in hoefde dan kan je dat gewoon weg halen
+
+
+Voor dit project is de programmeertaal R gebruikt, dit is een programmeertaal die veel wordt gebruikt voor statistische berekeningen en modeleren. Het is een vierde generatie codeertaal en heeft ook veel pakketen wat er voor zorgt dat je de taal voor veel dingen kunt gebruiken [2], voor dit verslag wordt bijvoorbeeld veel gebruik gemaakt van het paket deSolve. Voor dit verslag is versie 3.3.3 gebruikt van R,
+
+DeSolve is een pakket waarmee je gemakkelijk differentiaalvergelijkingen kunt oplossen, dit pakket is door Karline Soetaert, Thomas Petzoldt en R. Woodrow Setzer ontworpen. Voor dit project is versie 1.21 gebruikt. De code die veel is gebruikt tijdens dit onderzoek was $ODE()$, dit stukje code kan gewone eerste-orde differentiaalvergelijkingen doen, die veel nodig zijn om een goed model te kunnen maken. [3]
+
+
+\pagebreak
+
+# Resultaten
+
+
+
+\pagebreak
+
+# Discussie & Conclusie
+
+
+
+\pagebreak
+
+# Bronnen
+
+1. Glucocorticoids , Wikipedia, 24 mei 2018, [https://en.wikipedia.org/wiki/Glucocorticoid](https://en.wikipedia.org/wiki/Glucocorticoid)
+2. R (programming language), Wikipedia, 24 mei 2018, [https://en.wikipedia.org/wiki/R_(programming_language)](https://en.wikipedia.org/wiki/R_(programming_language))
+3. CRAN - Package deSolve, 
+
