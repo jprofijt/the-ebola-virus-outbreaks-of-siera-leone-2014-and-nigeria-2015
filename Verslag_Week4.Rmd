@@ -113,11 +113,12 @@ out2 <- ode(y = state,
 ```{r, echo = F}
 par(mfrow = c(1,2), oma = c(0, 0, 2, 0))
 plot(out[,1], out[,2],
+     main = "Dose van 39.925 ng/ml",
      type = "l", 
      xlab = "Tijd in uur",
      ylab = "fmol/g mRNAR",
      ylim = c(0, 5),
-     sub = "Dose van 39.925 ng/ml")
+     sub = "figuur 3")
 lines(medians[,2][medians$dose == 0.3| medians$dose == 0.0], 
       medians[,4][medians$dose == 0.3| medians$dose == 0.0],
       col = "red",
@@ -132,11 +133,11 @@ legend("topright",
 
 
 plot(out2[,1], out2[,2],
+     main = "Dose van 14.59 ng/ml",
      type = "l", 
      xlab = "Tijd in uur",
      ylab = "fmol/g mRNAR",
-     ylim = c(0, 5),
-     sub = "Dose van 14.59 ng/ml")
+     ylim = c(0, 5))
 lines(medians[,2][medians$dose == 0.1| medians$dose == 0.0], 
       medians[,4][medians$dose == 0.1| medians$dose == 0.0],
       col = "red",
@@ -153,11 +154,12 @@ mtext("Concentratie mRNAR over 168 uur", outer = TRUE, cex = 1.5)
 
 par(mfrow = c(1,2), oma = c(0, 0, 2, 0))
 plot(out[,1], out[,3],
+     main = "Dose van 39.925 ng/ml",
      type = "l", 
      xlab = "Tijd in uur",
      ylab = "fmol/g vrije receptoren",
      ylim = c(0, 300),
-     sub = "Dose van 39.925 ng/ml")
+     sub = "figuur 4")
 lines(medians[,2][medians$dose == 0.3| medians$dose == 0.0], 
       medians[,5][medians$dose == 0.3| medians$dose == 0.0],
       col = "red",
@@ -174,8 +176,8 @@ plot(out2[,1], out2[,3],
      type = "l", 
      xlab = "Tijd in uur",
      ylab = "fmol/g vrije receptoren",
-     ylim = c(0, 300),
-     sub = "Dose van 14.59 ng/ml")
+     main = "Dose van 14.59",
+     ylim = c(0, 300))
 lines(medians[,2][medians$dose == 0.1| medians$dose == 0.0], 
       medians[,5][medians$dose == 0.1| medians$dose == 0.0],
       col = "red",
@@ -264,7 +266,8 @@ plot(ks_rm4[,1], ks_rm4[,2],
      type = "l",
      xlab = "Tijd in uren",
      ylab = "fmol/g mRNAR",
-     main = "mRNAR concentratie over tijd")
+     main = "mRNAR concentratie over tijd",
+     sub = "figuur 5")
 
 lines(ks_rm1[,1], ks_rm1[,2],
       col = "red")
@@ -278,12 +281,12 @@ lines(normaal[,1], normaal[,2],
       col = "orange")
 
 legend("topright",
-       c("ks_Rm = 2.9 / 5 en kd_Rm = 2.9 / 5 / 4.74", 
-         "ks_Rm = 2.9 / 2 en kd_Rm = 2.9 / 2 / 4.74", 
-         "ks_Rm = 2.9 * 2 en kd_Rm = 2.9 * 2 / 4.74",
-         "ks_Rm = 2.9 * 5 en kd_Rm = 2.9 * 5 / 4.74",
-         "geen medicijn, ks_Rm = 2.9 * 2 en kd_Rm=2.9 * 2 / 4.74",
-         "normaal"),
+       c("ks_Rm = 0.58 en kd_Rm = 0.122", 
+         "ks_Rm = 1.45 en kd_Rm = 0.306", 
+         "ks_Rm = 5.8 en kd_Rm = 1.224",
+         "ks_Rm = 14.5 en kd_Rm = 3.059",
+         "geen medicijn, ks_Rm = 5.8 en kd_Rm = 1.224",
+         "normaal, ks_Rm = 2.9 en kd_Rm = 0.612"),
        col = c("green", "red", "blue", "black", "purple", "orange"),
        lty = 1,
        cex = 0.75)
@@ -340,14 +343,14 @@ t_steady_2 <- ode(y = state,
 t_steady_second <- tail(t_steady_2, n = 1)
 total <- rbind(steady, t_steady_2)
 
-par(mfrow = c(2,2), oma = c(0, 0, 2, 0))
+par(mfrow = c(1,2), oma = c(0, 0, 2, 0))
 plot(total[,1], total[,2],
      type = "l", 
      xlab = "Tijd in uur",
      ylab = "fmol/g mRNAR",
      main = "Concentratie mRNAR")
 abline(v = t_steady[, "time"], col = "red")
-legend("bottomright", c("Concentratie", "treatment stopped"), col = 1:2, lty = 1)
+legend("bottomright", c("Concentratie", "treatment stopped"), col = 1:2, lty = 1, cex = 0.5)
 
 plot(total[,1], total[,3],
      type = "l",
@@ -355,15 +358,19 @@ plot(total[,1], total[,3],
      ylab = "fmol/g vrije receptoren",
      main = "Hoeveelheid vrije receptoren")
 abline(v = t_steady[, "time"], col = "red")
-legend("bottomright", c("Concentratie", "treatment stopped"), col = 1:2, lty = 1)
+legend("bottomright", c("Concentratie", "treatment stopped"), col = 1:2, lty = 1, cex = 0.5)
 
+mtext("Alle variablen tot en steady state is berijkt", outer = TRUE, cex = 1.5)
+
+par(mfrow = c(1,2), oma = c(0, 2, 0, 0))
 plot(total[,1], total[,4],
      type = "l",
      xlab = "Tijd in uur",
      ylab = "dichtheid van het MPL-receptor complex",
-     main = "dichtheid van het MPL complex")
+     main = "dichtheid van het MPL complex",
+     sub = "figuur 6")
 abline(v = t_steady[, "time"], col = "red")
-legend("topright", c("Dichtheid", "treatment stopped"), col = 1:2, lty = 1)
+legend("topright", c("Dichtheid", "treatment stopped"), col = 1:2, lty = 1, cex = 0.5)
 
 plot(total[,1], total[,5],
      type = "l",
@@ -371,18 +378,23 @@ plot(total[,1], total[,5],
      ylab = "Hoeveelheid MPL-receptoren",
      main = "Hoeveelheid MPL-receptoren")
 abline(v = t_steady[, "time"], col = "red")
-legend("topright", c("MPL-receptoren", "treatment stopped"), col = 1:2, lty = 1)
-
-mtext("Alle variablen tot en steady state is berijkt", outer = TRUE, cex = 1.5)
-
+legend("topright", c("MPL-receptoren", "treatment stopped"), col = 1:2, lty = 1, cex = 0.5)
 ```
 
 In figuur 6 is wordt weergegeven wat het effect is van het stoppen met de behandeling. Na t = 34 is er een staat berijkt dat er niets meer veranderd, hierna stoppen wij de behandeling door in het model D (de dosis) op 0 te zetten. in het figuur is duidelijk te zien dat wanneer er geen medidicijn meer in het systeem zit zal het zich snel herstellen naar de orginele waardes. dit komt omdat  er geen MPL meer is om mRNA synthese te onderdrukken/binden aan receptoren etc waardoor het bovenstaande effect ontstaat.
 
 \pagebreak
 
-# Discussie & Conclusie
+# Discussie
+Tijdens het uivoeren van dit onderzoek wilden wij graag weten of ons model kloppent was met experimentele waardes en kijken wat er gebreurt wanneer er bepaalde parameters/variabelen veranderd worden. In figuur 1 & 2 is ons model te zien en met de figuren 3 & 4 hebben wij experimentele data vergeleken met de data die wij hebben gesymuleert met ons model. Figuur 1 zie je de data diw wij hebben uit het model een duidelijk verschil, dat wanneer er een lagere dosis wordt toegediend zal er minder onderdrukking zijn van de aanmaak van mRNA. Als je hierin naar de experimentele data kijkt is het moeilijk om te zien of hier verschil in zit, dit kan komen door meetfouten en het feit dat het in het echt nooit perfect zal gaan. In figuur 2 is de vergelijking te zien van 2 dosisen en het effect hiervan op de hoeveelheid vrije receptor, in dit figuur is duidelijk te zien dat er gelijke trends tussen de experimentele data en het model zit, een hogere dosis geeft een lagere hoeveelheid vrije receptor wat betekend dat het MPL bind aan de receptoren en viceversa met een lagere dosis wat zorgt voor een hogere hoeveelheid vrije receptor bij experimentele data en bij de symulatie. Hiermee kunne wij zeggen dat ons model representatief is  van de realiteit onder perfecte omstandigheden. 
 
+Toch zal het model niet als vervanger kunnen zijn van experimentele data, omdat zoals eerder gezegt dit perfecte omstandigheden zijn en misschien zijn er bepaalde parameters die devieeren van de realiteit. 
+
+In volgende figuren 5 & 6 worden er parameters in ons model veranderd. In figuur 5 worden de snelheden van de aanmaak en afbraak van mRNA aangepast door de snel heden te verminderen of te vermeerderen. te zien is hoe de varaitie vanaf de normale waardes de curve veranderd. wat opvalt is dat waneer de waardes het minst van het orgineel af liggen dan de andere curves is dat die curves juist de grootste verschillen uitten. De rode lijn zijn de waardes ongeveer gehalveert deze laat ook zien dat het effect heirvaan ook een gehalveerde curve geeft als de snelheden van afname mRNA. De blauwe curve heeft een verdubbelde synthese en verdubbelde afbraak en geeft ook een groot verschillende curve maar deze berijkt zijn evenwicht eerder dan de rode curve.
+
+In figuur 6 is te zien wat er gebeurt wanneer wij stoppen met de behandeling. Dit symuleren wij door de D(dosis) op 0 te zetten op het tijdstip dat er geen veranderingen meer plaatsvinden in het model. duidelijk is te zien dat er geen effect meer is door het medicijn dat we hebbenweggehaalt omdat het model gelijk terug gaat naar zijn orginele waardes.
+
+De experimentele data geeft wel een beeld dat er niet echt een evenwicht ontstaat maar er nog grote deviatie is na een langere tijd. Misschien kunnen wij in ons model bepaalde parameters aanpassen zodat het meer op het experiment lijkt door het evenwicht later op te laten komen.
 
 
 \pagebreak
