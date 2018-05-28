@@ -6,7 +6,7 @@ output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, cache = T)
+knitr::opts_chunk$set(echo = FALSE, cache = T)
 ```
 
 ```{r, echo = F, message = F}
@@ -20,16 +20,32 @@ library(deSolve)
 
 # Inleiding
 
-* Moeten nog een reden in komen waarom we het onderzoek doen
-
-Corticosteroïden zijn steroïdhormonen die worden gebruikt tegen ontstekingen en infecties. Dit steroïdhormoon wordt  gemaakt in de bijnier en bestaat voornamelijk uit twee groepen, glucocorticosteroïden en mineralocorticosteroïden. De meeste corticosteroïden die worden gebruikt zijn glucocorticosteroïden, daarom zal hier ook grotendeels alleen uitleg staan over Glucocostreroïden. Deze corticosteroiden worden veel gebruikt tegen aandoeningen, zoals asma. De glucocorticosteroïden werken door ontstekingsremmende genen te activeren en de expressie genen die ontstekkingen laten onstaan te induceren. [1]
+Corticosteroïden zijn steroïdhormonen die worden gebruikt tegen ontstekingen en infecties. Dit steroïdhormoon wordt  gemaakt in de bijnier en bestaat voornamelijk uit twee groepen, glucocorticosteroïden en mineralocorticosteroïden. De meeste corticosteroïden die worden gebruikt zijn glucocorticosteroïden, daarom zal hier ook grotendeels alleen uitleg staan over Glucocostreroïden. Deze corticosteroiden worden veel gebruikt tegen aandoeningen, zoals asma. De glucocorticosteroïden werken door ontstekingsremmende genen te activeren en de expressie genen die ontstekkingen laten onstaan te induceren.[1] In dit onderzoek willen wij graag de effecten van het corticosteroïde MPL bekijken en zien of het een effectief medicijn is.
 
 \pagebreak
 
 # Materiaal en Methoden
 
-* Wist niet helemaal wat ik hier in moest zetten, als materiaal hier niet in hoefde dan kan je dat gewoon weg halen
+In dit project modeleren wij de expressie van gluecocortiocoide receptoren, waarbij remming optreed door coricosteroiden.
 
+Er wordt verwacht dat wanneer er medicijnen toegedient word, Dat de expressie van de GR receptor daalt zodat de ontsteking geremt wordt. Het medicijn dat wij gebruiken is methylprednisolon (MPL) gebruikt als coricosteroide.
+
+
+![Het model](./Model_Glucocortiods.png)
+
+in het model(figuur 1) beinvloeden Glucocorticosterioiden(bij ons MPL) de hoeveelheid transcriptie van ontstekings factoren en ze hebben ook een remmend effect op de transcriptie van eigen receptoren door de binding van het geactiveerde sterioide-receptir complex aan het glucocorticoid response element. D is de plasma concentratie van het MPL in molair. Dit is de dosis van het medicijn MPL. mRNAR staat voor de hoeveelheid receptor mRNA en deze wordt beinvloed door de waarde ks_Rm omdat deze voor de synthese zorgt van het GR mRNA, ook wordt hij beinvloed door kd_Rm deze zorgt voor de afbraak van het GR mRNA. R staat voor de vrije gluocorticoid receptor dichtheid in het cytocol. R wordt beinvloed door de variablen ks_R, deze zort voor de synthese van de receptor en kd_R zorgt voor de afbraak van de receptor. DR is de dichtheid van het MPL receptor complex en wordt geregeld door de variabele kon, deze regeld de aanmaak van MPL-receptor complex en KT, deze zorgt voor de translocatie van MPL-receptor complex en deze beinvloed dus ook de DR(N) want dit is de hoeveelheid MPL-receptor complex in de nucleus. ook wordt deze beinvloed door kre deze variable zorgt ook voor translocatie van het complex. daarnaast zijn er nog 2 variablen Rf & IC50_Rm. Rf is de hoeveelheid vrije receptor die gerecycled wordt. IC50_Rm is de concentratie MPL-receptor complex in de nucleus waarbij de aanmaak van receptor mRNA daalt tot 50% van de basis waarde.
+
+![Diffrentiaal Vergelijkingen](Diffrentiaal vergelijkingen.png)
+
+```{r}
+library(pander)
+
+pander(state <- c(Rmo = 4.740, 
+           Ro = 267,
+           DR = 0,
+           DRN = 0), style = "rmarkdown", caption = "Tabel 1:Startwaardes")
+```
+In tabel 1 zijn onze startwaardes te zien. Rmo staat voor het basisniveau van de concentratie mRNA in fmol/ g liver en Ro is het basisniveau van de concentratie vrije receptor.
 
 Voor dit project is de programmeertaal R gebruikt, dit is een programmeertaal die veel wordt gebruikt voor statistische berekeningen en modeleren. Het is een vierde generatie codeertaal en heeft ook veel pakketen wat er voor zorgt dat je de taal voor veel dingen kunt gebruiken [2], voor dit verslag wordt bijvoorbeeld veel gebruik gemaakt van het paket deSolve. Voor dit verslag is versie 3.3.3 gebruikt van R,
 
@@ -39,8 +55,6 @@ DeSolve is een pakket waarmee je gemakkelijk differentiaalvergelijkingen kunt op
 \pagebreak
 
 # Resultaten
-
-
 
 \pagebreak
 
@@ -55,4 +69,5 @@ DeSolve is een pakket waarmee je gemakkelijk differentiaalvergelijkingen kunt op
 1. Glucocorticoids , Wikipedia, 24 mei 2018, [https://en.wikipedia.org/wiki/Glucocorticoid](https://en.wikipedia.org/wiki/Glucocorticoid)
 2. R (programming language), Wikipedia, 24 mei 2018, [https://en.wikipedia.org/wiki/R_(programming_language)](https://en.wikipedia.org/wiki/R_(programming_language))
 3. CRAN - Package deSolve, 9 mei 2018, [https://cran.r-project.org/web/packages/deSolve/index.html](https://cran.r-project.org/web/packages/deSolve/index.html) 
+4. Project webpage , [https://bioinf.nl/~fennaf/thema08/](https://bioinf.nl/~fennaf/thema08/)
 
