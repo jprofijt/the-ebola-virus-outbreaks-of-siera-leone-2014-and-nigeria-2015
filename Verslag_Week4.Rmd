@@ -11,7 +11,6 @@ knitr::opts_chunk$set(echo = FALSE, cache = T)
 
 ```{r, echo = F, message = F}
 rm(list = ls())
-library(deSolve)
 ```
 
 \tableofcontents
@@ -55,6 +54,237 @@ DeSolve is een pakket waarmee je gemakkelijk differentiaalvergelijkingen kunt op
 \pagebreak
 
 # Resultaten
+
+```{r}
+pander(para <- c(ksrm = 2.9,
+          IC50rm = 26.2,
+          kdrm = 0.612,
+          ksr = 3.22,
+          kre = 0.57,
+          kon = 0.00329,
+          kdr = 0.0572,
+          kt = 0.63,
+          Rf = 0.49,
+          D = (20 * 1000) / 371.471 ),
+       style = "rmarkdown", caption= "Tabel 2: Standaard parameters")
+```
+
+```{r,echo = T}
+library(deSolve)
+
+data <- read.csv("MPL.csv", header = T, na.strings = "NA")
+
+medians <- aggregate(data[,c("MPL_conc","mRNA","Free_receptor")],
+                     list(data$dose,data$time), median, na.rm=T)
+names(medians)[1:2] <- c("dose","time")
+
+time <- seq(0, 168, 1)
+
+low_dose <- para
+high_dose <- para
+low_dose["D"] <- ((14.59 * 1000) / 371.471)
+high_dose["D"] <- ((39.925 * 1000) / 371.471)
+
+cocortisocosteroid.model <- function(time, para, state){
+    with(as.list(c(state, para)),{
+        dmRNA <- ksrm * (1 - DRN / (IC50rm + DRN)) - kdrm * Rmo
+        dR <- ksr * Rmo + Rf * kre * DRN - kon * D * Ro - kdr * Ro
+        dDR <- kon * D * Ro - kt * DR
+        dDRN <- kt * DR - kre * DRN
+        
+        return(list(c(dmRNA, dR, dDR, dDRN)))
+        }
+    )
+}
+
+out <- ode(y = state,
+           times = time,
+           parms = high_dose,
+           func = cocortisocosteroid.model,
+           method = "euler")
+
+out2 <- ode(y = state,
+           times = time,
+           parms = low_dose,
+           func = cocortisocosteroid.model,
+           method = "euler")
+```
+
+```{r, echo = F}
+par(mfrow = c(1,2), oma = c(0, 0, 2, 0))
+plot(out[,1], out[,2],
+     type = "l", 
+     xlab = "Tijd in uur",
+     ylab = "fmol/g mRNAR",
+     ylim = c(0, 5),
+     sub = "Dose van 39.925 ng/ml")
+lines(medians[,2][medians$dose == 0.3| medians$dose == 0.0], 
+      medians[,4][medians$dose == 0.3| medians$dose == 0.0],
+      col = "red",
+      type = "o",
+      lty = 1,
+      pch = 16)
+legend("topright",
+       c("Simulatie", "Medians"),
+       col = c("black", "red"),
+       lty = c(1, NA),
+       pch = c(NA, 16))
+
+
+plot(out2[,1], out2[,2],
+     type = "l", 
+     xlab = "Tijd in uur",
+     ylab = "fmol/g mRNAR",
+     ylim = c(0, 5),
+     sub = "Dose van 14.59 ng/ml")
+lines(medians[,2][medians$dose == 0.1| medians$dose == 0.0], 
+      medians[,4][medians$dose == 0.1| medians$dose == 0.0],
+      col = "red",
+      type = "o",
+      lty = 1,
+      pch = 16)
+legend("topright",
+       c("Simulatie", "Medians"),
+       col = c("black", "red"),
+       lty = c(1, NA),
+       pch = c(NA, 16))
+
+mtext("Concentratie mRNAR over 168 uur", outer = TRUE, cex = 1.5)
+
+par(mfrow = c(1,2), oma = c(0, 0, 2, 0))
+plot(out[,1], out[,3],
+     type = "l", 
+     xlab = "Tijd in uur",
+     ylab = "fmol/g vrije receptoren",
+     ylim = c(0, 300),
+     sub = "Dose van 39.925 ng/ml")
+lines(medians[,2][medians$dose == 0.3| medians$dose == 0.0], 
+      medians[,5][medians$dose == 0.3| medians$dose == 0.0],
+      col = "red",
+      type = "o",
+      lty = 1,
+      pch = 16)
+legend("topright",
+       c("Simulatie", "Medians"),
+       col = c("black", "red"),
+       lty = c(1, NA),
+       pch = c(NA, 16))
+
+plot(out2[,1], out2[,3],
+     type = "l", 
+     xlab = "Tijd in uur",
+     ylab = "fmol/g vrije receptoren",
+     ylim = c(0, 300),
+     sub = "Dose van 14.59 ng/ml")
+lines(medians[,2][medians$dose == 0.1| medians$dose == 0.0], 
+      medians[,5][medians$dose == 0.1| medians$dose == 0.0],
+      col = "red",
+      type = "o",
+      lty = 1,
+      pch = 16)
+legend("topright",
+       c("Simulatie", "Medians"),
+       col = c("black", "red"),
+       lty = c(1, NA),
+       pch = c(NA, 16))
+
+mtext("Hoeveelheid vrije receptoren over 168 uur", outer = TRUE, cex = 1.5)
+```
+
+```{r, echo = T}
+time <- seq(0, 96, 1)
+
+para1 <- para
+para1["ksrm"] <- (2.9  / 5) 
+para1["kdrm"] <- (2.9 / 5 / 4.74)
+#para1["D"] <-((0 * 1000) / 371.471 )
+
+para2 <- para
+para2["ksrm"] <- (2.9 / 2) 
+para2["kdrm"] <- (2.9 / 2 / 4.74 )
+#para2["D"] <-((0 * 1000) / 371.471 )
+
+para3 <- para
+para3["ksrm"] <- (2.9 * 5) 
+para3["kdrm"] <- (2.9 * 5 / 4.74)
+#para3["D"] <-((0 * 1000) / 371.471 )
+
+para4 <- para
+para4["ksrm"] <- (2.9 * 2) 
+para4["kdrm"] <- (2.9 * 2 / 4.74)
+#para4["D"] <-((0 * 1000) / 371.471 )
+
+no_drug <- para
+no_drug["ksrm"] <- (2.9 * 2)
+no_drug["kdrm"] <- (2.9 * 2 / 4.74)
+no_drug["D"] <- ((0 * 1000) / 371.471)
+
+ks_rm1 <- ode(y = state,
+            times = time,
+            parms = para1,
+            func = cocortisocosteroid.model
+            )
+
+ks_rm2 <- ode(y = state,
+            times = time,
+            parms = para2,
+            func = cocortisocosteroid.model
+            )
+
+ks_rm3 <- ode(y = state,
+            times = time,
+            parms = para3,
+            func = cocortisocosteroid.model
+            )
+
+ks_rm4 <- ode(y = state,
+            times = time,
+            parms = para4,
+            func = cocortisocosteroid.model
+            )
+
+no_drug1 <- ode(y = state,
+            times = time,
+            parms = no_drug,
+            func = cocortisocosteroid.model
+            )
+
+normaal <- ode(y = state,
+            times = time,
+            parms = para,
+            func = cocortisocosteroid.model
+            )
+```
+
+```{r}
+plot(ks_rm4[,1], ks_rm4[,2],
+     type = "l",
+     xlab = "Tijd in uren",
+     ylab = "fmol/g mRNAR",
+     main = "mRNAR concentratie over tijd")
+
+lines(ks_rm1[,1], ks_rm1[,2],
+      col = "red")
+lines(ks_rm2[,1], ks_rm2[,2],
+      col = "blue")
+lines(ks_rm3[,1], ks_rm3[,2],
+      col = "green")
+lines(no_drug1[,1], no_drug1[,2],
+      col = "purple")
+lines(normaal[,1], normaal[,2],
+      col = "orange")
+
+legend("bottomright",
+       c("ks_Rm = 2.9 / 5 en kd_Rm = 2.9 / 5 / 4.74", 
+         "ks_Rm = 2.9 / 2 en kd_Rm = 2.9 / 2 / 4.74", 
+         "ks_Rm = 2.9 * 2 en kd_Rm = 2.9 * 2 / 4.74",
+         "ks_Rm = 2.9 * 5 en kd_Rm = 2.9 * 5 / 4.74",
+         "geen medicijn, ks_Rm = 2.9 * 2 en kd_Rm=2.9 * 2 / 4.74",
+         "normaal"),
+       col = c("green", "red", "blue", "black", "purple", "orange"),
+       lty = 1,
+       cex = 0.75)
+```
 
 \pagebreak
 
