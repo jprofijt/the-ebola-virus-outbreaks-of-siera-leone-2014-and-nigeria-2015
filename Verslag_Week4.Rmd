@@ -69,7 +69,7 @@ pander(para <- c(ksrm = 2.9,
        style = "rmarkdown", caption= "Tabel 2: Standaard parameters")
 ```
 
-```{r,echo = T}
+```{r}
 library(deSolve)
 
 data <- read.csv("MPL.csv", header = T, na.strings = "NA")
@@ -191,8 +191,11 @@ legend("topright",
 mtext("Hoeveelheid vrije receptoren over 168 uur", outer = TRUE, cex = 1.5)
 ```
 
-```{r, echo = T}
-time <- seq(0, 96, 1)
+In figuur 3 & 4 zijn de effecten van twee verschillende dosisen, 39.925 & 14.59 ng/ml MPL met ons model en met experimentele data vergeleken om te kijken of ons model vergelijkbaar is met de realiteit.
+Wat al snel te zien is dat de verloop van de grafieken gelijk zijn maar er alleen een vermindering/vermeerdering is. In het deze figuren is dat wanneer er een lagere dosis wordt ingedient zal de hoeveelheid mRNA minder worden onderdrukt. Ook zal de er minder MPL binden aan vrije recetoren. 
+
+```{r}
+time <- seq(0, 48, 1)
 
 para1 <- para
 para1["ksrm"] <- (2.9  / 5) 
@@ -274,7 +277,7 @@ lines(no_drug1[,1], no_drug1[,2],
 lines(normaal[,1], normaal[,2],
       col = "orange")
 
-legend("bottomright",
+legend("topright",
        c("ks_Rm = 2.9 / 5 en kd_Rm = 2.9 / 5 / 4.74", 
          "ks_Rm = 2.9 / 2 en kd_Rm = 2.9 / 2 / 4.74", 
          "ks_Rm = 2.9 * 2 en kd_Rm = 2.9 * 2 / 4.74",
@@ -285,6 +288,96 @@ legend("bottomright",
        lty = 1,
        cex = 0.75)
 ```
+
+In figuur 5 worden de synthese en afbraak variabelen ks_Rm & kd_Rm van GR mRNA aangepast. wat hier opvalt is wanneer de waardes bijde gahalfeerd of verdubbelt worden er de meeste variatie is vanaf de basis(oranje). De rode lijn heeft de grootste deviatie van de basis, omdat de afbraak bijna gelijk staat aan de synthese van het mRNA.
+
+```{r}
+rootfun <- function(time, state, para) {
+  dstate <- unlist(cocortisocosteroid.model(time, state, para))
+  sum(abs(dstate)) - 1e-2
+}
+
+time <- seq(0, 48, 1)
+
+# parameters staan in code block 1
+
+#startwaardes
+state <- c(Rmo = 4.740, 
+           Ro = 267,
+           DR = 0,
+           DRN = 0)
+
+steady <- ode(y = state,
+              times = time,
+              parms = para,
+              func = cocortisocosteroid.model, 
+              rootfun = rootfun)
+
+t_steady <- tail(steady, n = 1)
+
+time <- seq(t_steady[, 1], 200, 1)
+end_treatment <- c(ksrm = 2.9,
+          IC50rm = 26.2,
+          kdrm = 0.612,
+          ksr = 3.22,
+          kre = 0.57,
+          kon = 0.00329,
+          kdr = 0.0572,
+          kt = 0.63,
+          Rf = 0.49,
+          D = 0)
+
+state <- c(Rmo = t_steady[, 2], 
+           Ro = t_steady[, 3],
+           DR = t_steady[, 4],
+           DRN = t_steady[, 5])
+
+t_steady_2 <- ode(y = state,
+              times = time,
+              parms = end_treatment,
+              func = cocortisocosteroid.model, 
+              rootfun = rootfun)
+t_steady_second <- tail(t_steady_2, n = 1)
+total <- rbind(steady, t_steady_2)
+
+par(mfrow = c(2,2), oma = c(0, 0, 2, 0))
+plot(total[,1], total[,2],
+     type = "l", 
+     xlab = "Tijd in uur",
+     ylab = "fmol/g mRNAR",
+     main = "Concentratie mRNAR")
+abline(v = t_steady[, "time"], col = "red")
+legend("bottomright", c("Concentratie", "treatment stopped"), col = 1:2, lty = 1)
+
+plot(total[,1], total[,3],
+     type = "l",
+     xlab = "Tijd in uur",
+     ylab = "fmol/g vrije receptoren",
+     main = "Hoeveelheid vrije receptoren")
+abline(v = t_steady[, "time"], col = "red")
+legend("bottomright", c("Concentratie", "treatment stopped"), col = 1:2, lty = 1)
+
+plot(total[,1], total[,4],
+     type = "l",
+     xlab = "Tijd in uur",
+     ylab = "dichtheid van het MPL-receptor complex",
+     main = "dichtheid van het MPL complex")
+abline(v = t_steady[, "time"], col = "red")
+legend("topright", c("Dichtheid", "treatment stopped"), col = 1:2, lty = 1)
+
+plot(total[,1], total[,5],
+     type = "l",
+     xlab = "Tijd in uur",
+     ylab = "Hoeveelheid MPL-receptoren",
+     main = "Hoeveelheid MPL-receptoren")
+abline(v = t_steady[, "time"], col = "red")
+legend("topright", c("MPL-receptoren", "treatment stopped"), col = 1:2, lty = 1)
+
+mtext("Alle variablen tot en steady state is berijkt", outer = TRUE, cex = 1.5)
+
+```
+
+In figuur 6 is wordt weergegeven wat het effect is van het stoppen met de behandeling. Na t = 34 is er een staat berijkt dat er niets meer veranderd, hierna stoppen wij de behandeling door in het model D (de dosis) op 0 te zetten. in het figuur is duidelijk te zien dat wanneer er geen medidicijn meer in het systeem zit zal het zich snel herstellen naar de orginele waardes. dit komt omdat  er geen MPL meer is om mRNA synthese te onderdrukken/binden aan receptoren etc waardoor het bovenstaande effect ontstaat.
 
 \pagebreak
 
