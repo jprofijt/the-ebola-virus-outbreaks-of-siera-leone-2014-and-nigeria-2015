@@ -1,0 +1,84 @@
+---
+title: "Model Ebola"
+author: "Rinze-Pieter Jonker & Jouke Profijt"
+date: "June 1, 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, echo = F, message = F}
+rm(list = ls())
+library(deSolve)
+library(pander)
+```
+
+# Het model
+
+$dS/dT = -B(t)SI$
+
+$dE/dT = B(t)SI - omegaE$
+
+$dI/dT = omegaE - yI$
+
+$dR/dT = (1-f)yI$
+
+$dD/dT = fyI$
+
+```{r}
+# time 57 dagen (4924800)
+time <- seq(1,58, each = 1)
+
+# standaard parameters
+st.para <- c(k = 0.19,
+             f = 0.39,
+             y = 0.71, # 0.71
+             omega = 0.33, # 0.33
+             t = 3,
+             Bo = 1.22*10^-6)
+
+# standaard standaard waarden
+st.state <- c(S = 10^6,
+              I = 1,
+              E = 0,
+              R = 0,
+              D = 0)
+
+ebola.model <- function(time, para, state){
+    with(as.list(c(time ,state, para)),{
+        Bt <- Bo * 10^( -k * (time - t))
+        
+        dS <- -Bt * S * I #niet aankomen
+        dE <- Bt * S * I - (omega * E)
+        dI <- omega * E + (y * I)
+        dR <- (1 - f) * y * I
+        dD <- f * y * I
+        
+        return(list(c(dS, dE, dI, dR, dD)))
+    })
+}
+
+st.out <- ode(y = st.state,
+           times = time,
+           parms = st.para,
+           func = ebola.model,
+           method = "euler"
+           )
+
+colnames(st.out) <- c("time",
+                      "Susceptible individuals (S)",
+                      "Exposed people (E)", 
+                      "Infected people (I)",
+                      "Recovered people (R)",
+                      "Dead people (D)")
+
+st.out
+
+plot(st.out[,1], st.out[,2], type = "l", main = "S")
+plot(st.out[,1], st.out[,3], type = "l", main = "E")
+plot(st.out[,1], st.out[,4], type = "l", main = "I")
+plot(st.out[,1], st.out[,5], type = "l", main = "R")
+plot(st.out[,1], st.out[,6], type = "l", main = "D")
+```
