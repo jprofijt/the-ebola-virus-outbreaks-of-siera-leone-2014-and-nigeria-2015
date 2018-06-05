@@ -6,7 +6,7 @@ output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
 ```
 
 ```{r, echo = F, message = F}
@@ -14,6 +14,16 @@ rm(list = ls())
 library(deSolve)
 library(pander)
 ```
+# ToDo
+
+* optimalisatie model
+* opmaak plot
+* vergelijkingen met ander uitbraken
+* introductie
+* materiaal & methode
+* resultaten
+* discussie & conclusie
+
 
 \pagebreak
 
@@ -21,16 +31,26 @@ library(pander)
 
 \pagebreak
 
-# het Verslag
+# The Paper
 
-## Inleiding
+## Introduction
+
+In de moderne tijd is het heel erg makkelijk geworden om van het ene land naar het andere land te gaan omdat we nu kunnen vliegen. Dit heeft enorm veel voordelen maar dit heeft echter een groot probleem, virussen en bacteriën kunnen nu veel makkelijker van het ene land naar het andere land worden gebracht. Een van deze virussen is Ebola, dit virus is inmiddels al erg bekend geworden van de vele uitbraken in Afrika.
+
+
+nieuwe uitbraak
 
 
 
 
-[https://www.sciencedirect.com/science/article/pii/S1755436515000341#fig0010](het verslag zelf)
+    
 
-# Het model
+
+[The Paper](https://www.sciencedirect.com/science/article/pii/S1755436515000341)
+
+\pagebreak
+
+# The Model
 
 $dS/dT = -B(t)SI$
 
@@ -121,3 +141,37 @@ plot(st.out[,1], st.out[,6],
      main = "Amount of dead people")
 
 ```
+
+\pagebreak
+
+# aantekeningen verslag
+ * let op de bronnen, zorg ervoor dat er geen plagiaat is
+ 
+introductie
+    eerste paragraaf
+        introductie onderwerp, intresse krijgen
+        geeft context en probleem, welk probleem wil je oplossen
+        wat is het doel
+        
+    volgende paragraven
+        achtergrond van het onderwerp
+        context, zie de paper/onderzoek. wat is hier al gedaan
+        Historie van model (evt.)
+        Problemen
+        -> Studie
+    
+    Indeling Verslag
+
+Methoden
+    Waar komt data/model vandaan
+    Model beschrijven visueel (inkscape, draw.oi, dia) & formules (niet als plaatjes)
+    inline formule is met #$, formule appart is met dubbel
+    aanpak/ variatie
+    Analyse
+    hier moeten ook nog de programma's in de je gebruikt("we doen analyse met R")(veel programma's met versie erbij in een apparte tabel)
+    
+Resultaten
+
+Conclusie/Discussie
+
+Bronnen
