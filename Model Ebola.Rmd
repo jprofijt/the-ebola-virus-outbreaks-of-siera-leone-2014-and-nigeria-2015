@@ -15,6 +15,10 @@ library(deSolve)
 library(pander)
 ```
 
+# het Verslag
+
+[https://www.sciencedirect.com/science/article/pii/S1755436515000341#fig0010](het verslag zelf)
+
 # Het model
 
 $dS/dT = -B(t)SI$
@@ -29,7 +33,7 @@ $dD/dT = fyI$
 
 ```{r}
 # time 57 dagen (4924800)
-time <- seq(1,58, each = 1)
+time <- 1:58
 
 # standaard parameters
 st.para <- c(k = 0.19,
