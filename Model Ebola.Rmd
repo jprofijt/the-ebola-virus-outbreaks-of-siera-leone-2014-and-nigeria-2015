@@ -1,5 +1,5 @@
 ---
-title: "Model Ebola"
+title: "Het Ebola virus"
 author: "Rinze-Pieter Jonker & Jouke Profijt"
 date: "June 1, 2018"
 output: pdf_document
@@ -15,7 +15,18 @@ library(deSolve)
 library(pander)
 ```
 
+\pagebreak
+
+\tableofcontents
+
+\pagebreak
+
 # het Verslag
+
+## Inleiding
+
+
+
 
 [https://www.sciencedirect.com/science/article/pii/S1755436515000341#fig0010](het verslag zelf)
 
@@ -31,6 +42,10 @@ $dR/dT = (1-f)yI$
 
 $dD/dT = fyI$
 
+$Rt = BtS(t)/y$
+
+$Ro = BoS/y$
+
 ```{r}
 # time 57 dagen (4924800)
 time <- seq(1,58,1)
@@ -43,12 +58,16 @@ st.para <- c(k = 0.19,
              t = 3,
              Bo = 1.22*10^-6)
 
+
+
 # standaard standaard waarden
 st.state <- c(S = 10^6,
-              E = 100,
+              E = 0, # normaal 0
               I = 1,
               R = 0,
               D = 0)
+
+
 
 ebola.model <- function(time, para, state){
     with(as.list(c(state, para)),{
@@ -60,6 +79,8 @@ ebola.model <- function(time, para, state){
         dR <- (1 - f) * y * I
         dD <- f * y * I
         
+        
+        
         return(list(c(dS, dE, dI, dR, dD)))
     })
 }
@@ -70,6 +91,7 @@ st.out <- ode(y = st.state,
            func = ebola.model
            )
 
+
 colnames(st.out) <- c("time",
                       "Susceptible individuals (S)",
                       "Exposed people (E)", 
@@ -77,11 +99,25 @@ colnames(st.out) <- c("time",
                       "Recovered people (R)",
                       "Dead people (D)")
 
-st.out <- round(st.out)
 
-plot(st.out[,1], st.out[,2], type = "l", main = "S")
-plot(st.out[,1], st.out[,3], type = "l", main = "E")
-plot(st.out[,1], st.out[,4], type = "l", main = "I")
-plot(st.out[,1], st.out[,5], type = "l", main = "R")
-plot(st.out[,1], st.out[,6], type = "l", main = "D")
+plot(st.out[,1], st.out[,2],
+     type = "l",
+     main = "Amount of susceptible")
+    
+plot(st.out[,1], st.out[,3],
+     type = "l",
+     main = "Amount of exposed people")
+    
+plot(st.out[,1], st.out[,4],
+     type = "l",
+     main = "Amount of infected people")
+    
+plot(st.out[,1], st.out[,5],
+     type = "l",
+     main = "Amount of people that have recovered")
+    
+plot(st.out[,1], st.out[,6],
+     type = "l",
+     main = "Amount of dead people")
+
 ```
