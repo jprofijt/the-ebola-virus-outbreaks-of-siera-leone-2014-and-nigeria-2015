@@ -33,7 +33,7 @@ $dD/dT = fyI$
 
 ```{r}
 # time 57 dagen (4924800)
-time <- 1:58
+time <- seq(1,58,1)
 
 # standaard parameters
 st.para <- c(k = 0.19,
@@ -45,18 +45,18 @@ st.para <- c(k = 0.19,
 
 # standaard standaard waarden
 st.state <- c(S = 10^6,
+              E = 100,
               I = 1,
-              E = 0,
               R = 0,
               D = 0)
 
 ebola.model <- function(time, para, state){
-    with(as.list(c(time ,state, para)),{
+    with(as.list(c(state, para)),{
         Bt <- Bo * 10^( -k * (time - t))
         
-        dS <- -Bt * S * I #niet aankomen
-        dE <- Bt * S * I - (omega * E)
-        dI <- omega * E + (y * I)
+        dS <- -Bt * S * I 
+        dE <- Bt * S * I - omega * E
+        dI <- omega * E - y * I
         dR <- (1 - f) * y * I
         dD <- f * y * I
         
@@ -67,8 +67,7 @@ ebola.model <- function(time, para, state){
 st.out <- ode(y = st.state,
            times = time,
            parms = st.para,
-           func = ebola.model,
-           method = "euler"
+           func = ebola.model
            )
 
 colnames(st.out) <- c("time",
@@ -78,7 +77,7 @@ colnames(st.out) <- c("time",
                       "Recovered people (R)",
                       "Dead people (D)")
 
-st.out
+st.out <- round(st.out)
 
 plot(st.out[,1], st.out[,2], type = "l", main = "S")
 plot(st.out[,1], st.out[,3], type = "l", main = "E")
