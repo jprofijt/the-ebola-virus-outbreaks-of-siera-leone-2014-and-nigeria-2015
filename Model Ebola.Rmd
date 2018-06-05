@@ -68,14 +68,14 @@ $Ro = BoS/y$
 
 ```{r}
 # time 57 dagen (4924800)
-time <- seq(1,58,1)
+time <- seq(1,250,1)
 
 # standaard parameters
 st.para <- c(k = 0.19,
              f = 0.39,
-             y = 0.71, # 0.71
-             omega = 0.33, # 0.33
-             t = 3,
+             y = 1/7.41, # 0.71
+             omega = 1/9.31, # 0.33
+             t = 30,
              Bo = 1.22*10^-6)
 
 
@@ -122,23 +122,24 @@ colnames(st.out) <- c("time",
 
 plot(st.out[,1], st.out[,2],
      type = "l",
-     main = "Amount of susceptible")
+     main = "People suseptible to virus infection")
     
 plot(st.out[,1], st.out[,3],
      type = "l",
-     main = "Amount of exposed people")
+     main = "People exposed to virus")
     
 plot(st.out[,1], st.out[,4],
      type = "l",
-     main = "Amount of infected people")
+     main = "Amount of people infectet with ebola virus")
     
 plot(st.out[,1], st.out[,5],
      type = "l",
-     main = "Amount of people that have recovered")
+     main = "people who have recovered from virus infection")
     
 plot(st.out[,1], st.out[,6],
      type = "l",
-     main = "Amount of dead people")
+     main = "Amount of dead people",
+     ylab = "Cumulative number of cases")
 
 ```
 
