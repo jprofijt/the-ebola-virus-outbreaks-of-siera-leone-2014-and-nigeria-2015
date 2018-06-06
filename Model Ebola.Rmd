@@ -68,21 +68,21 @@ $Ro = BoS/y$
 
 ```{r}
 # time 57 dagen (4924800)
-time <- seq(1,250,1)
+time <- seq(1,57,1)
 
 # standaard parameters
 st.para <- c(k = 0.19,
              f = 0.39,
-             y = 1/7.41, # 0.71
-             omega = 1/9.31, # 0.33
-             t = 30,
+             y =  0.71,
+             omega = 0.33,
+             t = 3,
              Bo = 1.22*10^-6)
 
 
 
 # standaard standaard waarden
 st.state <- c(S = 10^6,
-              E = 0, # normaal 0
+              E = 0,
               I = 1,
               R = 0,
               D = 0)
@@ -99,8 +99,6 @@ ebola.model <- function(time, para, state){
         dR <- (1 - f) * y * I
         dD <- f * y * I
         
-        
-        
         return(list(c(dS, dE, dI, dR, dD)))
     })
 }
@@ -112,34 +110,104 @@ st.out <- ode(y = st.state,
            )
 
 
-colnames(st.out) <- c("time",
-                      "Susceptible individuals (S)",
-                      "Exposed people (E)", 
-                      "Infected people (I)",
-                      "Recovered people (R)",
-                      "Dead people (D)")
+colnames(st.out) <- c("Time",
+                      "S",
+                      "E", 
+                      "I",
+                      "R",
+                      "D")
+```
 
+```{r}
+st.out <- as.data.frame(st.out)
+round.out <- round(st.out)
 
-plot(st.out[,1], st.out[,2],
+plot(round.out[,1], round.out[,2],
      type = "l",
-     main = "People suseptible to virus infection")
+     main = "People suseptible to virus infection",
+     ylab = "amount of people",
+     xlab = "time in days",
+     col = "red")
+lines(st.out[,1], st.out[,2],
+      type = "l",
+      col = "black")
     
-plot(st.out[,1], st.out[,3],
+plot(round.out[,1], round.out[,3],
      type = "l",
-     main = "People exposed to virus")
+     main = "People exposed to virus",
+     ylab = "Cumulative number of cases",
+     xlab = "time in days",
+     col = "red")
+lines(st.out[,1], st.out[,3],
+      type = "l",
+      col = "black")
     
-plot(st.out[,1], st.out[,4],
+plot(round.out[,1], round.out[,4],
      type = "l",
-     main = "Amount of people infectet with ebola virus")
+     main = "Amount of people infected with ebola virus",
+     ylab = "Cumulative number of cases",
+     xlab = "time in days",
+     col = "red")
+lines(st.out[,1], st.out[,4],
+      type = "l",
+      col = "black")
     
-plot(st.out[,1], st.out[,5],
+plot(round.out[,1], round.out[,5],
      type = "l",
-     main = "people who have recovered from virus infection")
+     main = "people who have recovered from virus infection",
+     ylab = "Cumulative number of cases",
+     xlab = "time in days",
+     col = "red")
+lines(st.out[,1], st.out[,5],
+      type = "l",
+      col = "black")
     
-plot(st.out[,1], st.out[,6],
+plot(round.out[,1], round.out[,6],
      type = "l",
      main = "Amount of dead people",
-     ylab = "Cumulative number of cases")
+     ylab = "Cumulative number of cases",
+     xlab = "time in days",
+     col = "red")
+lines(st.out[,1], st.out[,6],
+      type = "l",
+      col = "black")
+
+```
+
+```{r}
+difference.by.day <- function(x, collumn){
+  day.before <- as.numeric(subset(round.out,Time == x[1] - 1, select = collumn))
+  x[collumn] - day.before
+  
+}
+difference.susceptible <- apply(round.out, 1, difference.by.day, "S")
+difference.exposed <- apply(round.out, 1, difference.by.day, "E")
+difference.infected <- apply(round.out, 1, difference.by.day, "I")
+difference.recovered <- apply(round.out, 1, difference.by.day, "R")
+difference.dead <- apply(round.out, 1, difference.by.day, "D")
+
+# plot(time, difference.susceptible,
+#      pch = 16)
+# 
+# plot(time, difference.exposed,
+#      pch = 16)
+# 
+# plot(time, difference.infected,
+#      pch = 16)
+
+plot(time, difference.recovered,
+     main = "amount of recovered people per day",
+     ylab = "recovered",
+     xlab = "day",
+     pch = 16)
+
+plot(time, difference.dead,
+     main = "amount of deceased per day",
+     ylab = "deceased",
+     xlab = "day",
+     pch = 16)
+
+
 
 ```
 
