@@ -68,7 +68,7 @@ $Ro = BoS/y$
 
 ```{r}
 # time 57 dagen (4924800)
-time <- seq(1,57,1)
+time <- seq(0,57,1)
 
 # standaard parameters
 st.para <- c(k = 0.19,
@@ -76,7 +76,8 @@ st.para <- c(k = 0.19,
              y =  0.71,
              omega = 0.33,
              t = 3,
-             Bo = 1.22*10^-6)
+             Bo = 1.22*10^-6,
+             e = 2.71828182459)
 
 
 
@@ -91,7 +92,7 @@ st.state <- c(S = 10^6,
 
 ebola.model <- function(time, para, state){
     with(as.list(c(state, para)),{
-        Bt <- Bo * 10^( -k * (time - t))
+        Bt <- Bo * e^( -k * (time - t))
         
         dS <- -Bt * S * I 
         dE <- Bt * S * I - omega * E
@@ -167,7 +168,8 @@ plot(round.out[,1], round.out[,6],
      main = "Amount of dead people",
      ylab = "Cumulative number of cases",
      xlab = "time in days",
-     col = "red")
+     col = "red",
+     ylim = c(0,5))
 lines(st.out[,1], st.out[,6],
       type = "l",
       col = "black")
@@ -175,14 +177,28 @@ lines(st.out[,1], st.out[,6],
 ```
 
 ```{r}
+library(basicTrendline)
+
 difference.by.day <- function(x, collumn){
   day.before <- as.numeric(subset(round.out,Time == x[1] - 1, select = collumn))
-  x[collumn] - day.before
+  diff <- x[collumn] - day.before
+  if (is.na(diff)) {
+      diff <- 0
+  }
+  return(diff)
   
 }
-difference.susceptible <- apply(round.out, 1, difference.by.day, "S")
-difference.exposed <- apply(round.out, 1, difference.by.day, "E")
-difference.infected <- apply(round.out, 1, difference.by.day, "I")
+
+difference.by.day.norm <- function(x, collumn){
+  day.before <- as.numeric(subset(st.out,Time == x[1] - 1, select = collumn))
+  diff <- x[collumn] - day.before
+  if (is.na(diff)){
+      diff <- 0
+  }
+  return(diff)
+}
+difference.dead.norm <- apply(st.out, 1, difference.by.day.norm, "D")
+
 difference.recovered <- apply(round.out, 1, difference.by.day, "R")
 difference.dead <- apply(round.out, 1, difference.by.day, "D")
 
@@ -199,13 +215,14 @@ plot(time, difference.recovered,
      main = "amount of recovered people per day",
      ylab = "recovered",
      xlab = "day",
-     pch = 16)
+     pch = 0)
 
 plot(time, difference.dead,
      main = "amount of deceased per day",
      ylab = "deceased",
      xlab = "day",
-     pch = 16)
+     pch = 0)
+trendline(time, difference.dead, model = "line2P")
 
 
 
