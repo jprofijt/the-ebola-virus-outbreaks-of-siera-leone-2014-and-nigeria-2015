@@ -47,7 +47,6 @@ nieuwe uitbraak
 
 
 [The Paper](https://www.sciencedirect.com/science/article/pii/S1755436515000341)
-[The WHO statistics](http://apps.who.int/gho/data/view.ebola-sitrep.ebola-summary-20150731?lang=en)
 
 \pagebreak
 
@@ -76,7 +75,7 @@ st.para <- c(k = 0.19,
              f = 0.39,
              y =  0.71,
              omega = 0.33,
-             t = 3,
+             t = 10,
              Bo = 1.22*10^-6,
              e = 2.71828182459)
 
@@ -88,16 +87,6 @@ st.state <- c(S = 10^6,
               I = 1,
               R = 0,
               D = 0)
-
-high.para <- st.para
-high.para["k"] <- 0.38
-high.para["f"] <- 0.71
-high.para["Bo"] <- 2.1*10^-6
-
-low.para <- st.para
-low.para["k"] <- 0.1
-low.para["f"] <- 0.14
-low.para["Bo"] <- 0.7^10^-6
 
 
 
@@ -115,20 +104,11 @@ ebola.model <- function(time, para, state){
     })
 }
 
-st.out <- as.data.frame(ode(y = st.state,
-                            times = time,
-                            parms = st.para,
-                            func = ebola.model))
-
-low.out <- as.data.frame(ode(y = st.state,
-                             times = time,
-                             parms = low.para,
-                             func = ebola.model))
-
-high.out <- as.data.frame(ode(y = st.state,
-                              times = time,
-                              parms = high.para,
-                              func = ebola.model))
+st.out <- ode(y = st.state,
+           times = time,
+           parms = st.para,
+           func = ebola.model
+           )
 
 
 colnames(st.out) <- c("Time",
@@ -140,25 +120,19 @@ colnames(st.out) <- c("Time",
 ```
 
 ```{r}
+st.out <- as.data.frame(st.out)
 round.out <- round(st.out)
 
 plot(round.out[,1], round.out[,2],
-     pch = 0,
+     type = "l",
      main = "People suseptible to virus infection",
      ylab = "amount of people",
-     xlab = "time in days")
+     xlab = "time in days",
+     col = "red")
 lines(st.out[,1], st.out[,2],
       type = "l",
       col = "black")
-# lines(high.out[,1], high.out[,2],
-#       col = "red",
-#       type = "l",
-#       lty = 1)
-# lines(low.out[,1], low.out[,2],
-#       col = "red",
-#       type = "l",
-#       lty = 1)
-#     
+    
 plot(round.out[,1], round.out[,3],
      type = "l",
      main = "People exposed to virus",
@@ -190,11 +164,11 @@ lines(st.out[,1], st.out[,5],
       col = "black")
     
 plot(round.out[,1], round.out[,6],
+     type = "l",
      main = "Amount of dead people",
      ylab = "Cumulative number of cases",
      xlab = "time in days",
-     pch = 0,
-     ylim = c(0,5))
+     col = "red")
 lines(st.out[,1], st.out[,6],
       type = "l",
       col = "black")
@@ -202,6 +176,8 @@ lines(st.out[,1], st.out[,6],
 ```
 
 ```{r}
+
+
 difference.by.day <- function(x, collumn){
   day.before <- as.numeric(subset(round.out,Time == x[1] - 1, select = collumn))
   diff <- x[collumn] - day.before
@@ -220,11 +196,28 @@ difference.by.day.norm <- function(x, collumn){
   }
   return(diff)
 }
+
+diffrence.infections <- function(x){
+  collumns <- c("I", "R", "D")
+  total.cases.before <- sum(as.numeric(subset(st.out,
+                                              Time == x[1] - 1,
+                                              select = collumns)))
+  
+  total.cases.after <- sum(as.numeric(subset(st.out,
+                                             Time == x[1],
+                                             select = collumns)))
+  diffrence <- total.cases.after - total.cases.before
+  
+  return(diffrence)
+  
+}
+
 difference.dead.norm <- apply(st.out, 1, difference.by.day.norm, "D")
 
 difference.recovered <- apply(round.out, 1, difference.by.day, "R")
 difference.dead <- apply(round.out, 1, difference.by.day, "D")
 
+daily.new.cases <- apply(st.out, 1, diffrence.infections)
 # plot(time, difference.susceptible,
 #      pch = 16)
 # 
@@ -246,6 +239,11 @@ plot(time, difference.dead,
      xlab = "day",
      pch = 0)
 
+plot(time, daily.new.cases,
+     main = "New cases per day",
+     ylab = "Cases",
+     xlab = "time",
+     type = "l")
 
 
 ```
