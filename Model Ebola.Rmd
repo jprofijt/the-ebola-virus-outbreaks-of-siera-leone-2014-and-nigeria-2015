@@ -75,7 +75,7 @@ st.para <- c(k = 0.19,
              f = 0.39,
              y =  0.71,
              omega = 0.33,
-             t = 3,
+             t = 10,
              Bo = 1.22*10^-6,
              e = 2.71828182459)
 
@@ -168,8 +168,7 @@ plot(round.out[,1], round.out[,6],
      main = "Amount of dead people",
      ylab = "Cumulative number of cases",
      xlab = "time in days",
-     col = "red",
-     ylim = c(0,5))
+     col = "red")
 lines(st.out[,1], st.out[,6],
       type = "l",
       col = "black")
@@ -177,7 +176,7 @@ lines(st.out[,1], st.out[,6],
 ```
 
 ```{r}
-library(basicTrendline)
+
 
 difference.by.day <- function(x, collumn){
   day.before <- as.numeric(subset(round.out,Time == x[1] - 1, select = collumn))
@@ -197,11 +196,28 @@ difference.by.day.norm <- function(x, collumn){
   }
   return(diff)
 }
+
+diffrence.infections <- function(x){
+  collumns <- c("I", "R", "D")
+  total.cases.before <- sum(as.numeric(subset(st.out,
+                                              Time == x[1] - 1,
+                                              select = collumns)))
+  
+  total.cases.after <- sum(as.numeric(subset(st.out,
+                                             Time == x[1],
+                                             select = collumns)))
+  diffrence <- total.cases.after - total.cases.before
+  
+  return(diffrence)
+  
+}
+
 difference.dead.norm <- apply(st.out, 1, difference.by.day.norm, "D")
 
 difference.recovered <- apply(round.out, 1, difference.by.day, "R")
 difference.dead <- apply(round.out, 1, difference.by.day, "D")
 
+daily.new.cases <- apply(st.out, 1, diffrence.infections)
 # plot(time, difference.susceptible,
 #      pch = 16)
 # 
@@ -222,8 +238,12 @@ plot(time, difference.dead,
      ylab = "deceased",
      xlab = "day",
      pch = 0)
-trendline(time, difference.dead, model = "line2P")
 
+plot(time, daily.new.cases,
+     main = "New cases per day",
+     ylab = "Cases",
+     xlab = "time",
+     type = "l")
 
 
 ```
