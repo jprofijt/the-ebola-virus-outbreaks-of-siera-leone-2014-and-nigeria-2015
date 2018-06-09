@@ -39,8 +39,9 @@ In de moderne tijd is het heel erg makkelijk geworden om van het ene land naar h
 
 
 nieuwe uitbraak
+ - Moet nog even kijken of dit een goede inleiding is - 
 
-
+In this day and age the world is getting smaller and smaller. To get from europe to the united states it roughly takes 11 hours. This ease of travelling everywhere in the world within one day comes with one huge risk, the risk of spreading a dangerous infectious disease. On july 20, 2014 a infected passenger, with the Ebola virus disease (EVD), arrived in Nigeria. After a total of 20 cases where 8 died, Nigeria was cleared of the ebola virus on october 20, 2014 57 days. This shows what happens if 1 person is infected with ebola and begins to get in contact with others. Luckely by handeling fast not many people got infected with EVD because the authorities handeled quick. Through our simulations we are trying to replicate the outbreak in Nigeria and see what can happen if there wasn't a quick response and we like to show if this outbreak was a abnormlity or simular to other outbreaks.
 
 
     
@@ -89,14 +90,14 @@ st.state <- c(S = 10^6,
               D = 0)
 
 low.para <- st.para
-low.para["k"] <- 0.1
+low.para["k"] <- 0.1 #0.1
 low.para["f"] <- 0.14
-low.para["Bo"] <- 0.7*10^-6
+low.para["Bo"] <- 1.22*10^-6 # 0.7
 
 high.para <- st.para
-high.para["k"] <- 0.38
+high.para["k"] <- 0.38 # 0.38
 high.para["f"] <- 0.71
-high.para["Bo"] <- 2.1*10^-6
+high.para["Bo"] <- 1.22*10^-6 # 2.1
 
 
 ebola.model <- function(time, para, state){
