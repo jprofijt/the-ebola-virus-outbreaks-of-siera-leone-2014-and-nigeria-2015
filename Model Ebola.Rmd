@@ -53,6 +53,14 @@ In this day and age the world is getting smaller and smaller. To get from europe
 
 # The Model
 
+![Model for viral infection](EVD_Model.png)
+
+
+Figure 1: schemetic model for EVD infection spread. Susceptible induviduals *S* are infected by infectious individuals *I* at rate
+$\beta$. Then they go through a incubation period *E* at rate   $\sigma$.
+After incubation induviduals become infectious *I*. These infectious people either recover *R* or die *D* at rate $\gamma$. The fatality rate so how many people die or recover is given by *f*.
+
+
 $dS/dT = -B(t)SI$
 
 $dE/dT = B(t)SI - omegaE$
