@@ -99,7 +99,6 @@ high.para["f"] <- 0.71
 high.para["Bo"] <- 2.1*10^-6
 
 
-
 ebola.model <- function(time, para, state){
     with(as.list(c(state, para)),{
         Bt <- Bo * e^( -k * (time - t))
@@ -113,6 +112,8 @@ ebola.model <- function(time, para, state){
         return(list(c(dS, dE, dI, dR, dD)))
     })
 }
+
+
 
 st.out <- as.data.frame(ode(y = st.state,
                             times = time,
@@ -128,6 +129,7 @@ low.out <- as.data.frame(ode(y = st.state,
                              times = time,
                              parms = low.para,
                              func = ebola.model))
+
 
 
 colnames(st.out) <- c("Time",
@@ -154,6 +156,10 @@ colnames(low.out) <- c("Time",
 round.out <- round(st.out)
 ```
 
+```{r, warning=FALSE, message=FALSE}
+
+```
+
 ```{r}
 # plots maken
 # geen round meer, wel CL
@@ -163,7 +169,8 @@ plot(st.out$Time, st.out$S,
      type = "l",
      main = "amount of susceptible people over time",
      ylab = "Susceptible people",
-     xlab = "Time in days")
+     xlab = "Time in days",
+     ylim = c(min(st.out$S) - 10, 10^6))
 lines(high.out$Time, high.out$S,
       col = "red",
       type = "l",
@@ -178,7 +185,8 @@ plot(st.out$Time, st.out$E,
      type = "l",
      main = "Amount of exposed people over time",
      ylab = "Exposed people",
-     xlab = "Time in days")
+     xlab = "Time in days", 
+     ylim = c(0, max(st.out$E) + 5))
 lines(high.out$Time, high.out$E,
       col = "red",
       type = "l",
@@ -194,7 +202,8 @@ plot(st.out$Time, st.out$I,
      type = "l",
      main = "Amount of infected people over time",
      ylab = "Infected people",
-     xlab = "Time in days")
+     xlab = "Time in days", 
+     ylim = c(0, max(st.out$I) + 5))
 lines(high.out$Time, high.out$I,
       col = "red",
       type = "l",
@@ -209,7 +218,8 @@ plot(st.out$Time, st.out$R,
      type = "l",
      main = "Amount of people that have recoverd over time",
      ylab = "Recovered people",
-     xlab = "Time in days")
+     xlab = "Time in days", 
+     ylim = c(0, max(st.out$R) + 5))
 lines(high.out$Time, high.out$R,
       col = "red",
       type = "l",
@@ -224,7 +234,8 @@ plot(st.out$Time, st.out$D,
      type = "l",
      main = "Amount of dead people over time",
      ylab = "Dead people",
-     xlab = "Time in days")
+     xlab = "Time in days", 
+     ylim = c(0, max(st.out$D) + 5))
 lines(high.out$Time, high.out$D,
       col = "red",
       type = "l",
