@@ -6,7 +6,7 @@ output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
+knitr::opts_chunk$set(echo = TRUE, cache = FALSE)
 ```
 
 ```{r, echo = F, message = F}
@@ -18,8 +18,8 @@ library(pander)
 
 * optimalisatie model
 * opmaak plot
-* vergelijkingen met ander uitbraken
-* introductie
+* vergelijkingen met ander uitbraken : Moeten even weten waar we de data vandaan kunnen halen.
+* introductie - Done
 * materiaal & methode
 * resultaten
 * discussie & conclusie
@@ -35,16 +35,9 @@ library(pander)
 
 ## Introduction
 
-In de moderne tijd is het heel erg makkelijk geworden om van het ene land naar het andere land te gaan omdat we nu kunnen vliegen. Dit heeft enorm veel voordelen maar dit heeft echter een groot probleem, virussen en bacteriën kunnen nu veel makkelijker van het ene land naar het andere land worden gebracht. Een van deze virussen is Ebola, dit virus is inmiddels al erg bekend geworden van de vele uitbraken in Afrika.
 
+In this day and age the world is getting smaller and smaller. To get from europe to the united states it roughly takes 11 hours. This ease of travelling everywhere in the world within one day comes with one huge risk, the risk of spreading a dangerous infectious disease. On july 20, 2014 a infected passenger, with the Ebola virus disease (EVD), arrived in Nigeria. After a total of 20 cases where 8 died, Nigeria was cleared of the ebola virus on october 20, 2014 57 days. This shows what happens if 1 person is infected with ebola and begins to get in contact with others. Luckely by handeling fast not many people got infected with EVD because the authorities handeled quickly. Through our simulations we are trying to replicate the outbreak in Nigeria and see what can happen if there wasn't a quick response and we like to show if this outbreak was a abnormlity or simular to other outbreaks. Also we would like to compare the outbreak in Nigeria with other simular type of outbreaks and see if our parameters in the model are accurate for other EVD cases. 
 
-nieuwe uitbraak
- - Moet nog even kijken of dit een goede inleiding is - 
-
-In this day and age the world is getting smaller and smaller. To get from europe to the united states it roughly takes 11 hours. This ease of travelling everywhere in the world within one day comes with one huge risk, the risk of spreading a dangerous infectious disease. On july 20, 2014 a infected passenger, with the Ebola virus disease (EVD), arrived in Nigeria. After a total of 20 cases where 8 died, Nigeria was cleared of the ebola virus on october 20, 2014 57 days. This shows what happens if 1 person is infected with ebola and begins to get in contact with others. Luckely by handeling fast not many people got infected with EVD because the authorities handeled quick. Through our simulations we are trying to replicate the outbreak in Nigeria and see what can happen if there wasn't a quick response and we like to show if this outbreak was a abnormlity or simular to other outbreaks.
-
-
-    
 
 
 [The Paper](https://www.sciencedirect.com/science/article/pii/S1755436515000341)
