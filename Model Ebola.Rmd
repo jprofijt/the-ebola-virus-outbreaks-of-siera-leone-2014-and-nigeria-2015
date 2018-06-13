@@ -38,6 +38,9 @@ library(pander)
 In this day and age the world is getting smaller and smaller. To get from europe to the united states it roughly takes 11 hours. This ease of travelling everywhere in the world within one day comes with one huge risk, the risk of spreading a dangerous infectious disease. On july 20, 2014 a infected passenger, with the Ebola virus disease (EVD), arrived in Nigeria. After a total of 20 cases where 8 died, Nigeria was cleared of the ebola virus on october 20, 2014 57 days. This shows what happens if 1 person is infected with ebola and begins to get in contact with others. Luckely by handeling fast not many people got infected with EVD because the authorities handeled quickly. Through our simulations we are trying to replicate the outbreak in Nigeria and see what can happen if there wasn't a quick response and we like to show if this outbreak was a abnormlity or simular to other outbreaks. Also we would like to compare the outbreak in Nigeria with other simular type of outbreaks and see if our parameters in the model are accurate for other EVD cases. 
 
 
+The Ebola virus is a class IV RNA virus and the first time it was seen in 1976 in Sudan. 
+
+
 
 [The Paper](https://www.sciencedirect.com/science/article/pii/S1755436515000341)
 
@@ -45,23 +48,22 @@ In this day and age the world is getting smaller and smaller. To get from europe
 
 # 2. Materials & Methods
 
-### 2.1 The Model
+## 2.1 The Model
 
 
 
 ![Model for viral infection](EVD_Model.png)
 
 
-Figure 1: schematic model for EVD infection spread. Susceptible induviduals *S* are infected by infectious individuals *I* at rate
-$\beta$. Then they go through a incubation period *E* at rate   $\sigma$.
+Figure 1: schematic model for EVD infection spread. Susceptible induviduals *S* are infected by infectious individuals *I* at rate $\beta$. Then they go through a incubation period *E* at rate   $\sigma$.
 After incubation induviduals become infectious *I*. These infectious people either recover *R* or die *D* at rate $\gamma$. The fatality rate so how many people die or recover is given by *f*.
 
 
 $dS/dT = -B(t)SI$
 
-$dE/dT = B(t)SI - omegaE$
+$dE/dT = B(t)SI - \sigma E$
 
-$dI/dT = omegaE - yI$
+$dI/dT = \sigma E - yI$
 
 $dR/dT = (1-f)yI$
 
@@ -71,7 +73,10 @@ $Rt = BtS(t)/y$
 
 $Ro = BoS/y$
 
-```{r}
+## 2.2 The data
+
+The model was started with 10^6^ susceptible people *S*, 1 infected person *I* and no people that where exposed to him *E*. This was done because the case that was simulated was with one index case that could be traced. We also started with 0 dead people *D* and 0 recovered people R* because there cant be any dead people if there was nobody infected before the first day, this also goes for the recovered people. In the table below you can see the initial values of the model.
+```{r, echo=F}
 # time 57 dagen (4924800)
 time <- seq(0,57,1)
 
@@ -79,12 +84,10 @@ time <- seq(0,57,1)
 st.para <- c(k = 0.19,
              f = 0.39,
              y =  0.71,
-             omega = 0.33,
+             sigma = 0.33,
              t = 3,
              Bo = 1.22*10^-6,
              e = 2.71828182459)
-
-
 
 # standaard standaard waarden
 st.state <- c(S = 10^6,
@@ -93,15 +96,26 @@ st.state <- c(S = 10^6,
               R = 0,
               D = 0)
 
+pander(st.state, style = "grid", caption = "Standard initial values")
+```
+
+In the table below descirbes the parameters that where used. 
+```{r, echo = F}
+pander(st.para, style = "grid", caption = "Standard parmeters")
+```
+
+\pagebreak
+
+```{r}
 low.para <- st.para
 low.para["k"] <- 0.1 #0.1
 low.para["f"] <- 0.14
-low.para["Bo"] <- 1.22*10^-6 # 0.7
+low.para["Bo"] <- 0.7*10^-6 # 0.7
 
 high.para <- st.para
 high.para["k"] <- 0.38 # 0.38
 high.para["f"] <- 0.71
-high.para["Bo"] <- 1.22*10^-6 # 2.1
+high.para["Bo"] <- 2.1*10^-6 # 2.1
 
 
 ebola.model <- function(time, para, state){
@@ -109,8 +123,8 @@ ebola.model <- function(time, para, state){
         Bt <- Bo * e^( -k * (time - t))
         
         dS <- -Bt * S * I 
-        dE <- Bt * S * I - omega * E
-        dI <- omega * E - y * I
+        dE <- Bt * S * I - sigma * E
+        dI <- sigma * E - y * I
         dR <- (1 - f) * y * I
         dD <- f * y * I
         
@@ -123,17 +137,20 @@ ebola.model <- function(time, para, state){
 st.out <- as.data.frame(ode(y = st.state,
                             times = time,
                             parms = st.para,
-                            func = ebola.model))
+                            func = ebola.model,
+                            method = "euler"))
 
 high.out <- as.data.frame(ode(y = st.state,
                               times = time,
                               parms = high.para,
-                              func = ebola.model))
+                              func = ebola.model,
+                            method = "euler"))
 
 low.out <- as.data.frame(ode(y = st.state,
                              times = time,
                              parms = low.para,
-                             func = ebola.model))
+                             func = ebola.model,
+                            method = "euler"))
 
 
 
@@ -161,11 +178,8 @@ colnames(low.out) <- c("Time",
 round.out <- round(st.out)
 ```
 
-```{r, warning=FALSE, message=FALSE}
 
-```
-
-```{r}
+```{r, echo = F}
 # plots maken
 # geen round meer, wel CL
 
@@ -292,6 +306,10 @@ difference.recovered <- apply(round.out, 1, difference.by.day, "R")
 difference.dead <- apply(round.out, 1, difference.by.day, "D")
 
 daily.new.cases <- apply(st.out, 1, diffrence.infections)
+
+```
+
+```{r, echo=F}
 # plot(time, difference.susceptible,
 #      pch = 16)
 # 
