@@ -5,6 +5,9 @@ date: "June 1, 2018"
 output: pdf_document
 ---
 
+![Image of Ebola](Ebola.jpeg)
+
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, cache = FALSE)
 ```
@@ -14,6 +17,7 @@ rm(list = ls())
 library(deSolve)
 library(pander)
 ```
+
 
 \pagebreak
 
@@ -38,34 +42,29 @@ The Ebola virus is a class IV RNA virus and the first time it was seen in 1976 i
 
 # 2. Materials & Methods
 
-## 2.1 The Model
+## 2.1. The Model
+
+![schematic model for EVD infection spread. Susceptible induviduals *S* are infected by infectious individuals *I* at rate $\beta$. Then they go through a incubation period *E* at rate   $\sigma$. After incubation induviduals become infectious *I*. These infectious people either recover *R* or die *D* at rate $\gamma$. The fatality rate so how many people die or recover is given by *f*.](EVD_Model.png)
 
 
+The model uses the following formula's:
 
-![Model for viral infection](EVD_Model.png)
+* $B(t) = Boe ^(-k(time - t))^ $
+* $dS/dT = -B(t)SI$
+* $dE/dT = B(t)SI - \sigma E$
+* $dI/dT = \sigma E - yI$
+* $dR/dT = (1-f)yI$
+* $dD/dT = fyI$
+
+The model itself is a rather simple SEIR (Susceptible-Exposed-Infecious-Recovered) model, as can be seen in figure 2. The people that are in the group of susceptible people *S* will move to the exposed group *E* after they get infected by the virus, if they are exposed to the virus they will go through a incubation period $\sigma$. After they went through the incubation period they will move to the infected group *I*. Here they will move trough the infectiousness period *y*. After this they will either move to the group recoverd people *R* or the group dead people *D*. This will be caculated by using the fatality rate *f*, in the case of ebola it is 0.39. The differential equations will be solved using the $ODE()$ function from deSolve, deSolve is a package in R
 
 
-Figure 1: schematic model for EVD infection spread. Susceptible induviduals *S* are infected by infectious individuals *I* at rate $\beta$. Then they go through a incubation period *E* at rate   $\sigma$.
-After incubation induviduals become infectious *I*. These infectious people either recover *R* or die *D* at rate $\gamma$. The fatality rate so how many people die or recover is given by *f*.
-
-
-$dS/dT = -B(t)SI$
-
-$dE/dT = B(t)SI - \sigma E$
-
-$dI/dT = \sigma E - yI$
-
-$dR/dT = (1-f)yI$
-
-$dD/dT = fyI$
-
-$Rt = BtS(t)/y$
-
-$Ro = BoS/y$
-
-## 2.2 The data
+## 2.2. The data
 
 The model was started with 10^6^ susceptible people *S*, 1 infected person *I* and no people that where exposed to him *E*. This was done because the case that was simulated was with one index case that could be traced. We also started with 0 dead people *D* and 0 recovered people R* because there cant be any dead people if there was nobody infected before the first day, this also goes for the recovered people. In the table below you can see the initial values of the model.
+
+\pagebreak
+
 ```{r, echo=F}
 # time 57 dagen (4924800)
 time <- seq(0,57,1)
@@ -96,7 +95,9 @@ used.state$Meaning <- c("Susceptible people",
 pander(used.state, style = "grid", caption = "Standard initial values")
 ```
 
-In the table below descirbes the parameters that where used. These parameters where based on the parameters used in the paper we are reviewing
+In the table below descirbes the parameters that where used. These parameters where based on the parameters used in the paper we are reviewing.
+
+
 ```{r, echo = F}
 used.para <- data.frame(st.para)
 colnames(used.para) <- c("Value")
@@ -184,18 +185,23 @@ colnames(low.out) <- c("Time",
 round.out <- round(st.out)
 ```
 
+\pagebreak
+
+# 3. Results
 
 ```{r, echo = F}
-# plots maken
-# geen round meer, wel CL
-
 # Susceptible people
 plot(st.out$Time, st.out$S,
-     type = "l",
+     type = "n",
      main = "amount of susceptible people over time",
      ylab = "Susceptible people",
      xlab = "Time in days",
      ylim = c(min(st.out$S) - 10, 10^6))
+# polygon(c(st.out$Time, rev(st.out$Time)), c(high.out$S, rev(low.out$S)),
+#         col = "red",
+#         lwd = 0.25,
+#         density = 20,
+#         border = NA)
 lines(high.out$Time, high.out$S,
       col = "red",
       type = "l",
@@ -204,6 +210,12 @@ lines(low.out$Time, low.out$S,
       col = "red",
       type = "l",
       lty = 2)
+lines(st.out$Time, st.out$S,
+      lwd = 2)
+legend("bottomright",
+       c("Simulation", "Confidence intervals (95% - 5%)"),
+       lty = c( 1, 2),
+       col = c("black", "red"))
 ```
 
 ```{r, echo=F}
@@ -279,6 +291,7 @@ lines(low.out$Time, low.out$D,
       type = "l",
       lty = 2)
 ```
+
 
 ```{r}
 difference.by.day <- function(x, collumn){
