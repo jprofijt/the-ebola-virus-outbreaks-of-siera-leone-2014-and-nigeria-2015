@@ -14,16 +14,6 @@ rm(list = ls())
 library(deSolve)
 library(pander)
 ```
-# ToDo
-
-* optimalisatie model
-* opmaak plot
-* vergelijkingen met ander uitbraken : Moeten even weten waar we de data vandaan kunnen halen.
-* introductie - Done
-* materiaal & methode
-* resultaten
-* discussie & conclusie
-
 
 \pagebreak
 
@@ -96,12 +86,28 @@ st.state <- c(S = 10^6,
               R = 0,
               D = 0)
 
-pander(st.state, style = "grid", caption = "Standard initial values")
+used.state <- data.frame(st.state)
+colnames(used.state) <- c("Value")
+used.state$Meaning <- c("Susceptible people",
+                        "Exposed people",
+                        "Infected people",
+                        "Recovered people",
+                        "Dead people")
+pander(used.state, style = "grid", caption = "Standard initial values")
 ```
 
-In the table below descirbes the parameters that where used. 
+In the table below descirbes the parameters that where used. These parameters where based on the parameters used in the paper we are reviewing
 ```{r, echo = F}
-pander(st.para, style = "grid", caption = "Standard parmeters")
+used.para <- data.frame(st.para)
+colnames(used.para) <- c("Value")
+used.para$Meaning <- c("Rate at wich the control measures reduce transmission",
+                       "Fatality rate",
+                       "Duration of incubation",
+                       "Duration of infectiousness",
+                       "Time at wich the control measures start to work",
+                       "Transmission rate",
+                       "Constante")
+pander(used.para, style = "grid", caption = "Standard parmeters")
 ```
 
 \pagebreak
@@ -198,6 +204,9 @@ lines(low.out$Time, low.out$S,
       col = "red",
       type = "l",
       lty = 2)
+```
+
+```{r, echo=F}
 
 # Exposed people
 plot(st.out$Time, st.out$E,
@@ -214,7 +223,9 @@ lines(low.out$Time, low.out$E,
       col = "red",
       type = "l",
       lty = 2)
+```
 
+```{r, echo=F}
 
 # Infected people
 plot(st.out$Time, st.out$I,
@@ -231,7 +242,9 @@ lines(low.out$Time, low.out$I,
       col = "red",
       type = "l",
       lty = 2)
+```
 
+```{r, echo=F}
 # Recovered people
 plot(st.out$Time, st.out$R,
      type = "l",
@@ -247,7 +260,9 @@ lines(low.out$Time, low.out$R,
       col = "red",
       type = "l",
       lty = 2)
+```
 
+```{r, echo=F}
 # Dead people
 plot(st.out$Time, st.out$D,
      type = "l",
@@ -324,20 +339,24 @@ plot(time, difference.recovered,
      ylab = "recovered",
      xlab = "day",
      pch = 0)
+```
+
+```{r, echo=F}
 
 plot(time, difference.dead,
      main = "amount of deceased per day",
      ylab = "deceased",
      xlab = "day",
      pch = 0)
+```
+
+```{r, echo=F}
 
 plot(time, daily.new.cases,
      main = "New cases per day",
      ylab = "Cases",
      xlab = "time",
      type = "l")
-
-
 ```
 
 \pagebreak
