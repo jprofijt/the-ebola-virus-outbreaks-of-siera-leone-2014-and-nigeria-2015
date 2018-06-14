@@ -439,6 +439,9 @@ plot(time, daily.new.cases,
 ```{r}
 ebola_data <- read.csv("Data/previous-case-counts.csv", header = T, sep = ";")
 ebola_data.sorted <- ebola_data[order(as.Date(ebola_data$WHO.report.date, format = "%d-%m-%Y")),]
+
+# ID toegevoegd zodat de rijen een apparte value had die altijd uniek was
+ebola_data.sorted$ID <- seq(0, length(ebola_data.sorted$WHO.report.date) - 1, 1)
 asdate <- function(x) {
   date2 <- as.Date(as.character(x), format="%d-%m-%Y")
   return(date2)
@@ -455,11 +458,24 @@ get.timestamp <- function(x) {
 
 time.st <- apply(ebola_data.sorted, 1, get.timestamp)
 time.st[1] <- 0
-time.st <- head(time.st, -1)
-procces.time <- function(x) {
-  for 
+
+#tijd verschil toegevoegd zodat je makkelijker hiermee kan rekenen, voorbereiding voor sum()
+ebola_data.sorted$time.difference <- as.numeric(unlist(time.st))
+ebola_data.sorted <- head(ebola_data.sorted, -1)
+
+
+get.time <- function(x){
+  ID.para <- as.numeric(unlist(x[10]))
+  index <- subset(ebola_data.sorted, ID <= ID.para, select = time.difference)
+  return(sum(index))
 }
 
+time.points <- apply(ebola_data.sorted, 1, get.time)
+ebola_data.sorted$time.points <- time.points
+
+#verwijderen van overbodige tabellen
+ebola_data.sorted$time.difference <- NULL
+ebola_data.sorted$ID <- NULL
 ```
 
 \pagebreak
