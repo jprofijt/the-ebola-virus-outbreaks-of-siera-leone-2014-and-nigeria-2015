@@ -9,7 +9,7 @@ output: pdf_document
 
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, cache = FALSE)
+knitr::opts_chunk$set()
 ```
 
 ```{r, echo = F, message = F}
@@ -29,14 +29,11 @@ library(pander)
 # 1. Introduction
 
 
-In this day and age the world is getting smaller and smaller. To get from europe to the united states it roughly takes 11 hours. This ease of travelling everywhere in the world within one day comes with one huge risk, the risk of spreading a dangerous infectious disease. On july 20, 2014 a infected passenger, with the Ebola virus disease (EVD), arrived in Nigeria. After a total of 20 cases where 8 died, Nigeria was cleared of the ebola virus on october 20, 2014 57 days. This shows what happens if 1 person is infected with ebola and begins to get in contact with others. Luckely by handeling fast not many people got infected with EVD because the authorities handeled quickly. Through our simulations we are trying to replicate the outbreak in Nigeria and see what can happen if there wasn't a quick response and we like to show if this outbreak was a abnormlity or simular to other outbreaks. Also we would like to compare the outbreak in Nigeria with other simular type of outbreaks and see if our parameters in the model are accurate for other EVD cases. 
+In this day and age the world is getting smaller and smaller. To get from europe to the united states it roughly takes 11 hours. This ease of travelling everywhere in the world within one day comes with one huge risk, the risk of spreading a dangerous infectious disease. On july 20, 2014 a infected passenger, with the Ebola virus disease (EVD), arrived in Nigeria. After a total of 20 cases where 8 died, Nigeria was cleared of the ebola virus on october 20, 2014 57 days. This shows what happens if 1 person is infected with ebola and begins to get in contact with others. Luckely by handeling fast not many people got infected with EVD because the authorities handeled quickly. Through our simulations we are trying to replicate the outbreak in Nigeria and see what can happen if there wasn't a quick response and we like to show if this outbreak was a abnormlity or simular to other outbreaks. Also we would like to compare the outbreak in Nigeria with other simular type of outbreaks and see if our parameters in the model are accurate for other EVD cases. [2]
 
 
 The Ebola virus is a class IV RNA virus and the first time it was seen in 1976 in Sudan. 
 
-
-
-[The Paper](https://www.sciencedirect.com/science/article/pii/S1755436515000341)
 
 \pagebreak
 
@@ -49,19 +46,19 @@ The Ebola virus is a class IV RNA virus and the first time it was seen in 1976 i
 
 The model uses the following formula's:
 
-* $B(t) = Boe ^(-k(time - t))^ $
+* $B(t) = B0e^{(-k(time - t))}$
 * $dS/dT = -B(t)SI$
 * $dE/dT = B(t)SI - \sigma E$
 * $dI/dT = \sigma E - yI$
 * $dR/dT = (1-f)yI$
 * $dD/dT = fyI$
 
-The model itself is a rather simple SEIR (Susceptible-Exposed-Infecious-Recovered) model, as can be seen in figure 2. The people that are in the group of susceptible people *S* will move to the exposed group *E* after they get infected by the virus, if they are exposed to the virus they will go through a incubation period $\sigma$. After they went through the incubation period they will move to the infected group *I*. Here they will move trough the infectiousness period *y*. After this they will either move to the group recoverd people *R* or the group dead people *D*. This will be caculated by using the fatality rate *f*, in the case of ebola it is 0.39. The differential equations will be solved using the $ODE()$ function from deSolve, deSolve is a package in R
+The model itself is a rather simple SEIR (Susceptible-Exposed-Infecious-Recovered) model, as can be seen in figure 2. The people that are in the group of susceptible people *S* will move to the exposed group *E* after they get infected by the virus, if they are exposed to the virus they will go through a incubation period $\sigma$. After they went through the incubation period they will move to the infected group *I*. Here they will move trough the infectiousness period *y*. After this they will either move to the group recoverd people *R* or the group dead people *D*. This will be caculated by using the fatality rate *f*, in the case of ebola it is 0.39. The differential equations will be solved using the $ODE()$ function from deSolve, deSolve is a package in R. [1]
 
 
 ## 2.2. The data
 
-The model was started with 10^6^ susceptible people *S*, 1 infected person *I* and no people that where exposed to him *E*. This was done because the case that was simulated was with one index case that could be traced. We also started with 0 dead people *D* and 0 recovered people R* because there cant be any dead people if there was nobody infected before the first day, this also goes for the recovered people. In the table below you can see the initial values of the model.
+The model was started with 10^6^ susceptible people *S*, 1 infected person *I* and no people that where exposed to him *E*. This was done because the case that was simulated was with one index case that could be traced. We also started with 0 dead people *D* and 0 recovered people R* because there cant be any dead people if there was nobody infected before the first day, this also goes for the recovered people. In the table below you can see the initial values of the model. [1]
 
 \pagebreak
 
@@ -196,12 +193,12 @@ plot(st.out$Time, st.out$S,
      main = "amount of susceptible people over time",
      ylab = "Susceptible people",
      xlab = "Time in days",
-     ylim = c(min(st.out$S) - 10, 10^6))
-# polygon(c(st.out$Time, rev(st.out$Time)), c(high.out$S, rev(low.out$S)),
-#         col = "red",
-#         lwd = 0.25,
-#         density = 20,
-#         border = NA)
+     ylim = c(min(st.out$S) - 45, 10^6))
+polygon(c(st.out$Time, rev(st.out$Time)), c(high.out$S, rev(low.out$S)),
+        col = "red",
+        lwd = 0.25,
+        density = 20,
+        border = NA)
 lines(high.out$Time, high.out$S,
       col = "red",
       type = "l",
@@ -219,14 +216,18 @@ legend("bottomright",
 ```
 
 ```{r, echo=F}
-
 # Exposed people
 plot(st.out$Time, st.out$E,
-     type = "l",
+     type = "n",
      main = "Amount of exposed people over time",
      ylab = "Exposed people",
      xlab = "Time in days", 
-     ylim = c(0, max(st.out$E) + 5))
+     ylim = c(0, max(st.out$E) + 15))
+polygon(c(st.out$Time, rev(st.out$Time)), c(high.out$E, rev(low.out$E)),
+        col = "red",
+        lwd = 0.25,
+        density = 20,
+        border = NA)
 lines(high.out$Time, high.out$E,
       col = "red",
       type = "l",
@@ -235,17 +236,27 @@ lines(low.out$Time, low.out$E,
       col = "red",
       type = "l",
       lty = 2)
+lines(st.out$Time, st.out$E,
+      lwd = 2)
+legend("topright",
+       c("Simulation", "Confidence intervals (95% - 5%)"),
+       lty = c( 1, 2),
+       col = c("black", "red"))
 ```
 
 ```{r, echo=F}
-
 # Infected people
 plot(st.out$Time, st.out$I,
      type = "l",
      main = "Amount of infected people over time",
      ylab = "Infected people",
      xlab = "Time in days", 
-     ylim = c(0, max(st.out$I) + 5))
+     ylim = c(0, max(st.out$I) + 7))
+polygon(c(st.out$Time, rev(st.out$Time)), c(high.out$I, rev(low.out$I)),
+        col = "red",
+        lwd = 0.25,
+        density = 20,
+        border = NA)
 lines(high.out$Time, high.out$I,
       col = "red",
       type = "l",
@@ -254,16 +265,27 @@ lines(low.out$Time, low.out$I,
       col = "red",
       type = "l",
       lty = 2)
+lines(st.out$Time, st.out$I,
+      lwd = 2)
+legend("topright",
+       c("Simulation", "Confidence intervals (95% - 5%)"),
+       lty = c( 1, 2),
+       col = c("black", "red"))
 ```
 
 ```{r, echo=F}
 # Recovered people
 plot(st.out$Time, st.out$R,
-     type = "l",
+     type = "n",
      main = "Amount of people that have recoverd over time",
      ylab = "Recovered people",
      xlab = "Time in days", 
-     ylim = c(0, max(st.out$R) + 5))
+     ylim = c(0, max(st.out$R) + 10))
+polygon(c(st.out$Time, rev(st.out$Time)), c(high.out$R, rev(low.out$R)),
+        col = "red",
+        lwd = 0.25,
+        density = 20,
+        border = NA)
 lines(high.out$Time, high.out$R,
       col = "red",
       type = "l",
@@ -272,16 +294,27 @@ lines(low.out$Time, low.out$R,
       col = "red",
       type = "l",
       lty = 2)
+lines(st.out$Time, st.out$R,
+      lwd = 2)
+legend("topright",
+       c("Simulation", "Confidence intervals (95% - 5%)"),
+       lty = c( 1, 2),
+       col = c("black", "red"))
 ```
 
 ```{r, echo=F}
 # Dead people
 plot(st.out$Time, st.out$D,
-     type = "l",
+     type = "n",
      main = "Amount of dead people over time",
      ylab = "Dead people",
      xlab = "Time in days", 
-     ylim = c(0, max(st.out$D) + 5))
+     ylim = c(0, max(st.out$D) + 35))
+polygon(c(st.out$Time, rev(st.out$Time)), c(high.out$D, rev(low.out$D)),
+        col = "red",
+        lwd = 0.25,
+        density = 20,
+        border = NA)
 lines(high.out$Time, high.out$D,
       col = "red",
       type = "l",
@@ -290,6 +323,12 @@ lines(low.out$Time, low.out$D,
       col = "red",
       type = "l",
       lty = 2)
+lines(st.out$Time, st.out$D,
+      lwd = 2)
+legend("topright",
+       c("Simulation", "Confidence intervals (95% - 5%)"),
+       lty = c( 1, 2),
+       col = c("black", "red"))
 ```
 
 
@@ -374,6 +413,18 @@ plot(time, daily.new.cases,
 
 \pagebreak
 
+# 4. Conclusie & Discussie
+
+\pagebreak
+
+# Bronnen
+
+1. Althaus, C. L., Low, N., Musa, E. O., Shuaib, F., & Gsteiger, S. (2015, 21 april). Ebola virus disease outbreak in Nigeria: Transmission dynamics and rapid control. Retrieved from [https://www.sciencedirect.com/science/article/pii/S1755436515000341](https://www.sciencedirect.com/science/article/pii/S1755436515000341) on 01-06-2018
+
+2. Wikipedia, Ebolavirus. (2018, 29 mei). Retrieved from [https://en.wikipedia.org/wiki/Ebolavirus](https://en.wikipedia.org/wiki/Ebolavirus), on 10-06-2018
+
+\pagebreak
+
 # aantekeningen verslag
  * let op de bronnen, zorg ervoor dat er geen plagiaat is
  
@@ -405,3 +456,9 @@ Resultaten
 Conclusie/Discussie
 
 Bronnen
+
+suplementing ding
+appendix
+
+
+jafta stomp
