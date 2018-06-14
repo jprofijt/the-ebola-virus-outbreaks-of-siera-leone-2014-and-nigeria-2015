@@ -69,8 +69,8 @@ time <- seq(0,57,1)
 # standaard parameters
 st.para <- c(k = 0.19,
              f = 0.39,
-             y =  0.71,
-             sigma = 0.33,
+             y =  1/7.41,
+             sigma = 1/9.31,
              t = 3,
              Bo = 1.22*10^-6,
              e = 2.71828182459)
@@ -447,10 +447,12 @@ ebola_data.sorted <- ebola_data[order(as.Date(ebola_data$WHO.report.date, format
 
 # ID toegevoegd zodat de rijen een apparte value had die altijd uniek was
 ebola_data.sorted$ID <- seq(0, length(ebola_data.sorted$WHO.report.date) - 1, 1)
+#korte functie voor het omvormen van de datums naar datum objecten.
 asdate <- function(x) {
   date2 <- as.Date(as.character(x), format="%d-%m-%Y")
   return(date2)
 }
+#Berekend wat het verschil in dagen is tussen de datums zodat we makkelijk onze data kunnen plotten
 get.timestamp <- function(x) {
   dates <- lapply(ebola_data.sorted$WHO.report.date, asdate)
   date1 <- as.Date(as.character(x[1]), format="%d-%m-%Y")
@@ -486,16 +488,23 @@ ebola_data.sorted$ID <- NULL
 ```{r}
 time <- seq(0,max(ebola_data.sorted$time.points),1)
 
-exp.state <- c(S = 7.396^6,
+#begint met 5 doden en 6 totale cases
+exp.state <- c(S = 7.396*10^6,
                E = 0,
-               I = 1,
+               I = 6,
                R = 0,
-               D = 0)
-
+               D = 5)
+exp.para <- c(k = 0.19,
+             f = 0,39,
+             y =  0.10,
+             sigma = 0.13,
+             t = 20,
+             Bo = 1.22*10^-6,
+             e = 2.71828182459)
 
 exp.out <- as.data.frame(ode(y = exp.state,
                             times = time,
-                            parms = st.para,
+                            parms = exp.para,
                             func = ebola.model,
                             method = "euler"))
 
@@ -511,7 +520,7 @@ colnames(exp.out) <- c("Time",
 ```{r}
 get.total.infected <- function(x){
   cases <- x[1]
-  index <- subset(exp.out, Time <= cases, select = I)
+  index <- subset(exp.out, Time <= cases, select = c("I", "D", "R"))
   sum(index)
 }
 
@@ -521,13 +530,14 @@ optim.cases <- function(exp, model){
   diff <- (exp[6] - model[[10]])^2
 }
 
-optim.test <- optim(ebola_data.sorted$Total.Cases..Sierra.Leone, optim.cases, model = total.cases, method = "Nelder-Mead")
 
-plot(ebola_data.sorted$time.points, ebola_data.sorted$Total.Cases..Sierra.Leone,
+optim.test <- optim(ebola_data.sorted$Total.Cases..Sierra.Leone, optim.cases, model = total.cases, method = "Nelder-Mead")
+plot(ebola_data.sorted$Total.Deaths..Sierra.Leone ~ ebola_data.sorted$time.points ,
      type = "p",
-     pch = 20)
-lines(time, total.cases,
-      col = "red")
+     pch = 20,
+     col="black")
+lines(exp.out$D ~ exp.out$Time, col = "red")
+
 lines(ebola_data.sorted$time.points, optim.test$par,
       col = "blue")
 ```
