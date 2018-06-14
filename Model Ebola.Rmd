@@ -9,7 +9,7 @@ output: pdf_document
 
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set()
+knitr::opts_chunk$set(echo = F)
 ```
 
 ```{r, echo = F, message = F}
@@ -193,7 +193,7 @@ plot(st.out$Time, st.out$S,
      main = "amount of susceptible people over time",
      ylab = "Susceptible people",
      xlab = "Time in days",
-     ylim = c(min(st.out$S) - 45, 10^6))
+     ylim = c(min(high.out$S) - 15, 10^6))
 polygon(c(st.out$Time, rev(st.out$Time)), c(high.out$S, rev(low.out$S)),
         col = "red",
         lwd = 0.25,
@@ -222,7 +222,7 @@ plot(st.out$Time, st.out$E,
      main = "Amount of exposed people over time",
      ylab = "Exposed people",
      xlab = "Time in days", 
-     ylim = c(0, max(st.out$E) + 15))
+     ylim = c(0, max(high.out$E) + 5))
 polygon(c(st.out$Time, rev(st.out$Time)), c(high.out$E, rev(low.out$E)),
         col = "red",
         lwd = 0.25,
@@ -251,7 +251,7 @@ plot(st.out$Time, st.out$I,
      main = "Amount of infected people over time",
      ylab = "Infected people",
      xlab = "Time in days", 
-     ylim = c(0, max(st.out$I) + 7))
+     ylim = c(0, max(high.out$I) + 3))
 polygon(c(st.out$Time, rev(st.out$Time)), c(high.out$I, rev(low.out$I)),
         col = "red",
         lwd = 0.25,
@@ -280,7 +280,7 @@ plot(st.out$Time, st.out$R,
      main = "Amount of people that have recoverd over time",
      ylab = "Recovered people",
      xlab = "Time in days", 
-     ylim = c(0, max(st.out$R) + 10))
+     ylim = c(0, max(high.out$R) + 5))
 polygon(c(st.out$Time, rev(st.out$Time)), c(high.out$R, rev(low.out$R)),
         col = "red",
         lwd = 0.25,
@@ -343,15 +343,6 @@ difference.by.day <- function(x, collumn){
   
 }
 
-difference.by.day.norm <- function(x, collumn){
-  day.before <- as.numeric(subset(st.out,Time == x[1] - 1, select = collumn))
-  diff <- x[collumn] - day.before
-  if (is.na(diff)){
-      diff <- 0
-  }
-  return(diff)
-}
-
 diffrence.infections <- function(x){
   collumns <- c("I", "R", "D")
   total.cases.before <- sum(as.numeric(subset(st.out,
@@ -367,39 +358,73 @@ diffrence.infections <- function(x){
   
 }
 
-difference.dead.norm <- apply(st.out, 1, difference.by.day.norm, "D")
+
 
 difference.recovered <- apply(round.out, 1, difference.by.day, "R")
+high.recovered <- apply(round(high.out), 1, difference.by.day, "R")
+low.recovered <- apply(round(low.out), 1, difference.by.day,"R")
+
 difference.dead <- apply(round.out, 1, difference.by.day, "D")
+high.dead <- apply(round(high.out), 1, difference.by.day, "D")
+low.dead <- apply(round(low.out), 1, difference.by.day,"D")
 
 daily.new.cases <- apply(st.out, 1, diffrence.infections)
 
 ```
 
 ```{r, echo=F}
-# plot(time, difference.susceptible,
-#      pch = 16)
-# 
-# plot(time, difference.exposed,
-#      pch = 16)
-# 
-# plot(time, difference.infected,
-#      pch = 16)
-
 plot(time, difference.recovered,
-     main = "amount of recovered people per day",
+     type = "n",
+     main = "Amount of recovered people per day",
      ylab = "recovered",
      xlab = "day",
-     pch = 0)
+     ylim = c(0, max(high.recovered + 3)))
+polygon(c(time, rev(time)), c(high.recovered, rev(low.recovered)),
+        col = "red",
+        lwd = 0.25,
+        density = 25,
+        border = NA)
+lines(time, high.recovered,
+      col = "red",
+      lty = 2)
+lines(time, low.recovered,
+      col = "red",
+      lty = 2)
+points(time, difference.recovered,
+       pch = 15)
+legend("topright",
+       c("Simulation", "Confidence interval (95% - 5%)"),
+       lty = c(NA, 2),
+       pch = c(15, NA),
+       col = c("black", "red"))
 ```
 
 ```{r, echo=F}
 
 plot(time, difference.dead,
+     type = "n",
      main = "amount of deceased per day",
      ylab = "deceased",
      xlab = "day",
-     pch = 0)
+     ylim = c(0, max(high.dead) + 8))
+polygon(c(time, rev(time)), c(high.dead, rev(low.dead)),
+        col = "red",
+        lwd = 0.25,
+        density = 25,
+        border = NA)
+lines(time, high.dead,
+      col = "red",
+      lty = 2)
+lines(time, low.dead,
+      col = "red",
+      lty = 2)
+points(time, difference.dead,
+       pch = 15)
+legend("topright",
+       c("Simulation", "Confidence interval (95% - 5%)"),
+       lty = c(NA, 2),
+       pch = c(15, NA),
+       col = c("black", "red"))
 ```
 
 ```{r, echo=F}
