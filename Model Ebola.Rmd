@@ -70,7 +70,7 @@ time <- seq(0,57,1)
 st.para <- c(k = 0.19,
              f = 0.39,
              y =  1/7.41,
-             sigma = 1/9.31,
+             sigma = 1/9.41,
              t = 3,
              Bo = 1.22*10^-6,
              e = 2.71828182459)
@@ -488,23 +488,16 @@ ebola_data.sorted$ID <- NULL
 ```{r}
 time <- seq(0,max(ebola_data.sorted$time.points),1)
 
-#begint met 5 doden en 6 totale cases
-exp.state <- c(S = 7.396*10^6,
+exp.state <- c(S = 7.396^6,
                E = 0,
-               I = 6,
+               I = 1,
                R = 0,
-               D = 5)
-exp.para <- c(k = 0.19,
-             f = 0,39,
-             y =  0.10,
-             sigma = 0.13,
-             t = 20,
-             Bo = 1.22*10^-6,
-             e = 2.71828182459)
+               D = 0)
+
 
 exp.out <- as.data.frame(ode(y = exp.state,
                             times = time,
-                            parms = exp.para,
+                            parms = st.para,
                             func = ebola.model,
                             method = "euler"))
 
@@ -520,7 +513,7 @@ colnames(exp.out) <- c("Time",
 ```{r}
 get.total.infected <- function(x){
   cases <- x[1]
-  index <- subset(exp.out, Time <= cases, select = c("I", "D", "R"))
+  index <- subset(exp.out, Time <= cases, select = I)
   sum(index)
 }
 
@@ -530,14 +523,13 @@ optim.cases <- function(exp, model){
   diff <- (exp[6] - model[[10]])^2
 }
 
-
 optim.test <- optim(ebola_data.sorted$Total.Cases..Sierra.Leone, optim.cases, model = total.cases, method = "Nelder-Mead")
-plot(ebola_data.sorted$Total.Deaths..Sierra.Leone ~ ebola_data.sorted$time.points ,
-     type = "p",
-     pch = 20,
-     col="black")
-lines(exp.out$D ~ exp.out$Time, col = "red")
 
+plot(ebola_data.sorted$time.points, ebola_data.sorted$Total.Cases..Sierra.Leone,
+     type = "p",
+     pch = 20)
+lines(time, total.cases,
+      col = "red")
 lines(ebola_data.sorted$time.points, optim.test$par,
       col = "blue")
 ```
