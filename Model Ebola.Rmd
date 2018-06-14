@@ -372,6 +372,22 @@ plot(time, daily.new.cases,
      type = "l")
 ```
 
+```{r}
+ebola_data <- read.csv("Data/previous-case-counts.csv", header = T, sep = ";")
+ebola_data.sorted <- ebola_data[order(as.Date(ebola_data$WHO.report.date, format = "%d-%m-%Y")),]
+get.timestamp <- function(x) {
+  date1 <- x[1]
+  index <- match(date1, ebola_data.sorted$WHO.report.date)
+  start.date <- ebola_data.sorted[index, 1]
+  date.diff <- as.Date(as.character(date1), format = "%d-%m-%Y")-as.Date(as.character(start.date), format = "%d-%m-%Y")
+  
+  return(index)
+  
+}
+
+get.timestamp(ebola_data.sorted[2,])
+```
+
 \pagebreak
 
 # aantekeningen verslag
