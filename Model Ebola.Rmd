@@ -414,17 +414,27 @@ plot(time, daily.new.cases,
 ```{r}
 ebola_data <- read.csv("Data/previous-case-counts.csv", header = T, sep = ";")
 ebola_data.sorted <- ebola_data[order(as.Date(ebola_data$WHO.report.date, format = "%d-%m-%Y")),]
+asdate <- function(x) {
+  date2 <- as.Date(as.character(x), format="%d-%m-%Y")
+  return(date2)
+}
 get.timestamp <- function(x) {
-  date1 <- x[1]
-  index <- match(date1, ebola_data.sorted$WHO.report.date)
-  start.date <- ebola_data.sorted[index, 1]
-  date.diff <- as.Date(as.character(date1), format = "%d-%m-%Y")-as.Date(as.character(start.date), format = "%d-%m-%Y")
-  
-  return(index)
+  dates <- lapply(ebola_data.sorted$WHO.report.date, asdate)
+  date1 <- as.Date(as.character(x[1]), format="%d-%m-%Y")
+  index <- match(date1, dates)
+  startdate <- as.Date(as.character(ebola_data.sorted[index - 1,]$WHO.report.date), format="%d-%m-%Y")
+  date.diff <- date1-startdate
+  return(as.numeric(date.diff))
   
 }
 
-get.timestamp(ebola_data.sorted[2,])
+time.st <- apply(ebola_data.sorted, 1, get.timestamp)
+time.st[1] <- 0
+time.st <- head(time.st, -1)
+procces.time <- function(x) {
+  for 
+}
+
 ```
 
 \pagebreak
