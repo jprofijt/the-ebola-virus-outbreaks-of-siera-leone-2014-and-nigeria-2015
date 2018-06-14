@@ -186,6 +186,8 @@ round.out <- round(st.out)
 
 # 3. Results
 
+## 3.1 Simulating the model
+
 ```{r, echo = F}
 # Susceptible people
 plot(st.out$Time, st.out$S,
@@ -436,7 +438,10 @@ plot(time, daily.new.cases,
      type = "l")
 ```
 
+## 3.2 Matching the model to exprimental data
+
 ```{r}
+# Data verkrijgen
 ebola_data <- read.csv("Data/previous-case-counts.csv", header = T, sep = ";")
 ebola_data.sorted <- ebola_data[order(as.Date(ebola_data$WHO.report.date, format = "%d-%m-%Y")),]
 
@@ -477,6 +482,56 @@ ebola_data.sorted$time.points <- time.points
 ebola_data.sorted$time.difference <- NULL
 ebola_data.sorted$ID <- NULL
 ```
+
+```{r}
+time <- seq(0,max(ebola_data.sorted$time.points),1)
+
+exp.state <- c(S = 7.396^6,
+               E = 0,
+               I = 1,
+               R = 0,
+               D = 0)
+
+
+exp.out <- as.data.frame(ode(y = exp.state,
+                            times = time,
+                            parms = st.para,
+                            func = ebola.model,
+                            method = "euler"))
+
+colnames(exp.out) <- c("Time",
+                      "S",
+                      "E", 
+                      "I",
+                      "R",
+                      "D")
+
+```
+
+```{r}
+get.total.infected <- function(x){
+  cases <- x[1]
+  index <- subset(exp.out, Time <= cases, select = I)
+  sum(index)
+}
+
+total.cases <- apply(round(exp.out), 1, get.total.infected)
+
+optim.cases <- function(exp, model){
+  diff <- (exp[6] - model[[10]])^2
+}
+
+optim.test <- optim(ebola_data.sorted$Total.Cases..Sierra.Leone, optim.cases, model = total.cases, method = "Nelder-Mead")
+
+plot(ebola_data.sorted$time.points, ebola_data.sorted$Total.Cases..Sierra.Leone,
+     type = "p",
+     pch = 20)
+lines(time, total.cases,
+      col = "red")
+lines(ebola_data.sorted$time.points, optim.test$par,
+      col = "blue")
+```
+
 
 \pagebreak
 
