@@ -112,19 +112,24 @@ pander(used.para, style = "grid", caption = "Standard parmeters")
 
 ```{r}
 low.para <- st.para
-low.para["k"] <- 0.1 #0.1
+low.para["k"] <- 0.19 #0.1
 low.para["f"] <- 0.14
 low.para["Bo"] <- 0.7*10^-6 # 0.7
 
 high.para <- st.para
-high.para["k"] <- 0.38 # 0.38
+high.para["k"] <- 0.19 # 0.38
 high.para["f"] <- 0.71
 high.para["Bo"] <- 2.1*10^-6 # 2.1
 
 
 ebola.model <- function(time, para, state){
     with(as.list(c(state, para)),{
-        Bt <- Bo * e^( -k * (time - t))
+        if (time > t){
+          Bt <- Bo * e^( -k * (time - t))
+        } else {
+          Bt <- Bo
+        }
+        
         
         dS <- -Bt * S * I 
         dE <- Bt * S * I - sigma * E
@@ -488,16 +493,44 @@ ebola_data.sorted$ID <- NULL
 ```{r}
 time <- seq(0,max(ebola_data.sorted$time.points),1)
 
+ebola.model <- function(time, para, state){
+    with(as.list(c(state, para)),{
+        #Bt <- Bo * e^( -k * (time - t))
+        if (time > t){
+          Bt <- Bo * e^( -k * (time - t))
+        } else {
+          Bt <- Bo
+        }
+        
+        dS <- -Bt * S * I 
+        dE <- Bt * S * I - sigma * E
+        dI <- sigma * E - y * I
+        dR <- (1 - f) * y * I
+        dD <- f * y * I
+        
+        return(list(c(dS, dE, dI, dR, dD)))
+    })
+}
+
+
+
 exp.state <- c(S = 7.396^6,
                E = 0,
                I = 1,
                R = 0,
                D = 0)
+exp.para <- c(k = 0.019,
+             f = 0.39,
+             y =  1/7.41,
+             sigma = 1/9.41,
+             t = 200,
+             Bo = 1.22*10^-6,
+             e = 2.71828182459)
 
 
 exp.out <- as.data.frame(ode(y = exp.state,
                             times = time,
-                            parms = st.para,
+                            parms = exp.para,
                             func = ebola.model,
                             method = "euler"))
 
@@ -513,14 +546,15 @@ colnames(exp.out) <- c("Time",
 ```{r}
 get.total.infected <- function(x){
   cases <- x[1]
-  index <- subset(exp.out, Time <= cases, select = I)
+  index <- subset(exp.out, Time <= cases, select = c("I", "D"))
   sum(index)
 }
 
-total.cases <- apply(round(exp.out), 1, get.total.infected)
+
+total.cases <- apply(exp.out, 1, get.total.infected)
 
 optim.cases <- function(exp, model){
-  diff <- (exp[6] - model[[10]])^2
+  diff <- (exp[4] - model[[10]])^2
 }
 
 optim.test <- optim(ebola_data.sorted$Total.Cases..Sierra.Leone, optim.cases, model = total.cases, method = "Nelder-Mead")
