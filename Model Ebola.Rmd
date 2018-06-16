@@ -221,7 +221,9 @@ legend("bottomright",
        lty = c( 1, 2),
        col = c("black", "red"))
 ```
+Figure 3: shows the amount of people suseptible to EVD infection with 95%-%5 confidence intervals.
 
+as shown with our model if control measures are implementet quickly the amount of people that are in danger of coming into contact with disease is minimal.
 ```{r, echo=F}
 # Exposed people
 plot(st.out$Time, st.out$E,
@@ -250,7 +252,7 @@ legend("topright",
        lty = c( 1, 2),
        col = c("black", "red"))
 ```
-
+Figure 4: People exposed to a infected induvidual with 95%-5% confidence intervals
 ```{r, echo=F}
 # Infected people
 plot(st.out$Time, st.out$I,
@@ -279,7 +281,7 @@ legend("topright",
        lty = c( 1, 2),
        col = c("black", "red"))
 ```
-
+Figure 5: amount of people infected with EVD with 95%-5% confidence intervals
 ```{r, echo=F}
 # Recovered people
 plot(st.out$Time, st.out$R,
@@ -308,12 +310,12 @@ legend("topright",
        lty = c( 1, 2),
        col = c("black", "red"))
 ```
-
+Figure 6: Total amount of people recovered from EVD infection, with 95%-5% confidence intervals
 ```{r, echo=F}
 # Dead people
 plot(st.out$Time, st.out$D,
      type = "n",
-     main = "Amount of dead people over time",
+     main = "Amount of dead indivduals over time",
      ylab = "Dead people",
      xlab = "Time in days", 
      ylim = c(0, max(st.out$D) + 35))
@@ -337,7 +339,7 @@ legend("topright",
        lty = c( 1, 2),
        col = c("black", "red"))
 ```
-
+Figure 7: total casualties from EVD infection with 95%-5% confidence intevals
 
 ```{r}
 difference.by.day <- function(x, collumn){
@@ -405,7 +407,7 @@ legend("topright",
        pch = c(15, NA),
        col = c("black", "red"))
 ```
-
+Figure 8: Recovered induviduals per day with 95%-5% confidence intervals
 ```{r, echo=F}
 
 plot(time, difference.dead,
@@ -433,7 +435,7 @@ legend("topright",
        pch = c(15, NA),
        col = c("black", "red"))
 ```
-
+Figure 9: Diseased induviduals per day with 95%-5% confidence intervals
 ```{r, echo=F}
 
 plot(time, daily.new.cases,
@@ -442,7 +444,7 @@ plot(time, daily.new.cases,
      xlab = "time",
      type = "l")
 ```
-
+Figure 10: New cases shown per day
 ## 3.2 Matching the model to exprimental data
 
 ```{r}
@@ -496,7 +498,7 @@ time <- seq(0,max(ebola_data.sorted$time.points),1)
 ebola.model <- function(time, para, state){
     with(as.list(c(state, para)),{
         #Bt <- Bo * e^( -k * (time - t))
-        if (time > t){
+        if (time > t | time == t){
           Bt <- Bo * e^( -k * (time - t))
         } else {
           Bt <- Bo
@@ -519,7 +521,7 @@ exp.state <- c(S = 7.396^6,
                I = 1,
                R = 0,
                D = 0)
-exp.para <- c(k = 0.019,
+exp.para <- c(k = 0.011,
              f = 0.39,
              y =  1/7.41,
              sigma = 1/9.41,
@@ -546,7 +548,7 @@ colnames(exp.out) <- c("Time",
 ```{r}
 get.total.infected <- function(x){
   cases <- x[1]
-  index <- subset(exp.out, Time <= cases, select = c("I", "D"))
+  index <- subset(exp.out, Time <= cases, select = c("I"))
   sum(index)
 }
 
@@ -561,13 +563,21 @@ optim.test <- optim(ebola_data.sorted$Total.Cases..Sierra.Leone, optim.cases, mo
 
 plot(ebola_data.sorted$time.points, ebola_data.sorted$Total.Cases..Sierra.Leone,
      type = "p",
-     pch = 20)
+     pch = 20, col = "black",
+     ylab = "Total EVD Infections",
+     xlab = "Time (days)",
+     main = "Model VS. Outbreak data Sierra Leone",
+     sub = "Model transmission decay set to 0.011(was k=0.19) and time to implement controlmeasures set to 200 days")
 lines(time, total.cases,
-      col = "red")
+      col = "red", type = "l")
 lines(ebola_data.sorted$time.points, optim.test$par,
       col = "blue")
+legend("bottomright",
+       c("Simulation", "Cases Sierra Leone", "Optimisation"),
+       lty = c( 1, 5, 1),
+       col = c("red", "black", "blue"))
 ```
-
+Figure 11: Model compaired to other outbreaks
 
 \pagebreak
 
