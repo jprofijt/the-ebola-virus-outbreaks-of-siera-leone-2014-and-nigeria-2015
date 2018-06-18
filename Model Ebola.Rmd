@@ -200,7 +200,7 @@ plot(st.out$Time, st.out$S,
      main = "amount of susceptible people over time",
      ylab = "Susceptible people",
      xlab = "Time in days",
-     ylim = c(min(high.out$S) - 15, 10^6))
+     ylim = c(min(high.out$S) - 20, 10^6))
 polygon(c(st.out$Time, rev(st.out$Time)), c(high.out$S, rev(low.out$S)),
         col = "red",
         lwd = 0.25,
@@ -221,9 +221,12 @@ legend("bottomright",
        lty = c( 1, 2),
        col = c("black", "red"))
 ```
+
 Figure 3: shows the amount of people suseptible to EVD infection with 95%-%5 confidence intervals.
 
 as shown with our model if control measures are implementet quickly the amount of people that are in danger of coming into contact with disease is minimal.
+
+
 ```{r, echo=F}
 # Exposed people
 plot(st.out$Time, st.out$E,
@@ -252,7 +255,9 @@ legend("topright",
        lty = c( 1, 2),
        col = c("black", "red"))
 ```
+
 Figure 4: People exposed to a infected induvidual with 95%-5% confidence intervals
+
 ```{r, echo=F}
 # Infected people
 plot(st.out$Time, st.out$I,
@@ -281,7 +286,9 @@ legend("topright",
        lty = c( 1, 2),
        col = c("black", "red"))
 ```
+
 Figure 5: amount of people infected with EVD with 95%-5% confidence intervals
+
 ```{r, echo=F}
 # Recovered people
 plot(st.out$Time, st.out$R,
@@ -310,7 +317,9 @@ legend("topright",
        lty = c( 1, 2),
        col = c("black", "red"))
 ```
+
 Figure 6: Total amount of people recovered from EVD infection, with 95%-5% confidence intervals
+
 ```{r, echo=F}
 # Dead people
 plot(st.out$Time, st.out$D,
@@ -339,6 +348,7 @@ legend("topright",
        lty = c( 1, 2),
        col = c("black", "red"))
 ```
+
 Figure 7: total casualties from EVD infection with 95%-5% confidence intevals
 
 ```{r}
@@ -407,7 +417,9 @@ legend("topright",
        pch = c(15, NA),
        col = c("black", "red"))
 ```
+
 Figure 8: Recovered induviduals per day with 95%-5% confidence intervals
+
 ```{r, echo=F}
 
 plot(time, difference.dead,
@@ -435,7 +447,9 @@ legend("topright",
        pch = c(15, NA),
        col = c("black", "red"))
 ```
+
 Figure 9: Diseased induviduals per day with 95%-5% confidence intervals
+
 ```{r, echo=F}
 
 plot(time, daily.new.cases,
@@ -444,7 +458,10 @@ plot(time, daily.new.cases,
      xlab = "time",
      type = "l")
 ```
+
 Figure 10: New cases shown per day
+
+
 ## 3.2 Matching the model to exprimental data
 
 ```{r}
