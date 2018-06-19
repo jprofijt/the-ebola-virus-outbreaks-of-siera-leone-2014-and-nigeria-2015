@@ -25,14 +25,15 @@ library(pander)
 
 \pagebreak
 
+# Abstract
+
+\pagebreak
+
 
 # 1. Introduction
 
 
 In this day and age the world is getting smaller and smaller. To get from europe to the united states it roughly takes 11 hours. This ease of travelling everywhere in the world within one day comes with one huge risk, the risk of spreading a dangerous infectious disease. On july 20, 2014 a infected passenger, with the Ebola virus disease (EVD), arrived in Nigeria. After a total of 20 cases where 8 died, Nigeria was cleared of the ebola virus on october 20, 2014 57 days. This shows what happens if 1 person is infected with ebola and begins to get in contact with others. Luckely by handeling fast not many people got infected with EVD because the authorities handeled quickly. Through our simulations we are trying to replicate the outbreak in Nigeria and see what can happen if there wasn't a quick response and we like to show if this outbreak was a abnormlity or simular to other outbreaks. Also we would like to compare the outbreak in Nigeria with other simular type of outbreaks and see if our parameters in the model are accurate for other EVD cases. [2]
-
-
-The Ebola virus is a class IV RNA virus and the first time it was seen in 1976 in Sudan. 
 
 
 \pagebreak
@@ -563,6 +564,14 @@ colnames(exp.out) <- c("Time",
 ```
 
 ```{r}
+exp.para.df <- data.frame(st.para)
+colnames(exp.para.df) <- c("Value")
+```
+
+```{r}
+```
+
+```{r}
 get.total.infected <- function(x){
   cases <- x[1]
   index <- subset(exp.out, Time <= cases, select = c("I"))
@@ -600,6 +609,14 @@ Figure 11: Model compaired to other outbreaks
 
 # 4. Conclusie & Discussie
 
+Conclusie: dit hebben we gedaan, we zijn er toen achter gekomen dat de parameter veel moesten worden verandert om het model vergelijkbaar te maken met de data.
+
+Discussie:
+laat in het onderzoek kwam de fouten, optim(), review verslag was af en toe moeilijk te begrijpen, parameters, toekomst plan: andere data nemen (andere landen, andere tijden)
+
+
+
+
 \pagebreak
 
 # Bronnen
@@ -608,9 +625,17 @@ Figure 11: Model compaired to other outbreaks
 
 2. Wikipedia, Ebolavirus. (2018, 29 mei). Retrieved from [https://en.wikipedia.org/wiki/Ebolavirus](https://en.wikipedia.org/wiki/Ebolavirus), on 10-06-2018
 
+3. bronnen Jouke
+
 \pagebreak
 
-# aantekeningen verslag
+# Bijlagen
+
+Bijlage A: The rmd file of the paper with all the code
+
+
+
+
  * let op de bronnen, zorg ervoor dat er geen plagiaat is
  
 introductie
