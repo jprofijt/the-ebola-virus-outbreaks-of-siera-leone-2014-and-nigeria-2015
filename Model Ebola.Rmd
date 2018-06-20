@@ -645,7 +645,7 @@ What we'd like to experiment with further is more outbreaks in diffrent places a
 
 \pagebreak
 
-# Bronnen
+# References
 
 1. Althaus, C. L., Low, N., Musa, E. O., Shuaib, F., & Gsteiger, S. (2015, 21 april). Ebola virus disease outbreak in Nigeria: Transmission dynamics and rapid control. Retrieved from [https://www.sciencedirect.com/science/article/pii/S1755436515000341](https://www.sciencedirect.com/science/article/pii/S1755436515000341) on 01-06-2018
 
@@ -656,6 +656,8 @@ What we'd like to experiment with further is more outbreaks in diffrent places a
 
 \pagebreak
 
-# Bijlagen
+# Appendix
 
-Bijlage A: The rmd file of the paper with all the code
+Appendix A: The rmd file of the paper with all the code
+Appendix B: 2014 outbreak data
+
