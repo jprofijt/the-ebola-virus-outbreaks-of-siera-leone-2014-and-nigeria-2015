@@ -262,6 +262,8 @@ legend("topright",
 
 Figure 4: People exposed to a infected induvidual with 95%-5% confidence intervals
 
+In this graph you can see the amount of exposed people over time, this plot uses the standard values over a timespan of 58 days.
+
 ```{r, echo=F}
 # Infected people
 plot(st.out$Time, st.out$I,
@@ -293,6 +295,8 @@ legend("topright",
 
 Figure 5: amount of people infected with EVD with 95%-5% confidence intervals
 
+This plot shows the amount of people that where infected in the during the infection, the standard values where used over a timespan of 58 days.
+
 ```{r, echo=F}
 # Recovered people
 plot(st.out$Time, st.out$R,
@@ -322,7 +326,9 @@ legend("topright",
        col = c("black", "red"))
 ```
 
-Figure 6: Total amount of people recovered from EVD infection, with 95%-5% confidence intervals
+Figure 6: Total amount of people recovered from EVD infection, with 95%-5% confidence intervals.
+
+The graph above shows the amount of people that have recovered from the EVD virus, these people will also be immuum for the Ebola virus, so they won't be added to the group of sucseptible people. This graph uses the standard parameters over a timespan of 58 days.
 
 ```{r, echo=F}
 # Dead people
@@ -331,7 +337,7 @@ plot(st.out$Time, st.out$D,
      main = "Amount of dead indivduals over time",
      ylab = "Dead people",
      xlab = "Time in days", 
-     ylim = c(0, max(st.out$D) + 35))
+     ylim = c(0, max(st.out$D) + 50))
 polygon(c(st.out$Time, rev(st.out$Time)), c(high.out$D, rev(low.out$D)),
         col = "red",
         lwd = 0.25,
@@ -353,7 +359,9 @@ legend("topright",
        col = c("black", "red"))
 ```
 
-Figure 7: total casualties from EVD infection with 95%-5% confidence intevals
+Figure 7: total casualties from EVD infection with 95%-5% confidence intevals.
+
+The plot above shows the amount of dead people over the duration of the outbreak, the simulation in this plot used the standard values over an timespan of 58 days.
 
 ```{r}
 difference.by.day <- function(x, collumn){
@@ -392,6 +400,8 @@ high.dead <- apply(round(high.out), 1, difference.by.day, "D")
 low.dead <- apply(round(low.out), 1, difference.by.day,"D")
 
 daily.new.cases <- apply(st.out, 1, diffrence.infections)
+daily.high.cases <- apply(high.out, 1, diffrence.infections)
+daily.low.cases <- apply(low.out, 1, diffrence.infections)
 
 ```
 
@@ -422,7 +432,7 @@ legend("topright",
        col = c("black", "red"))
 ```
 
-Figure 8: Recovered induviduals per day with 95%-5% confidence intervals
+Figure 8: Recovered induviduals per day with 95%-5% confidence intervals.
 
 ```{r, echo=F}
 
@@ -455,7 +465,6 @@ legend("topright",
 Figure 9: Diseased induviduals per day with 95%-5% confidence intervals
 
 ```{r, echo=F}
-
 plot(time, daily.new.cases,
      main = "New cases per day",
      ylab = "Cases",
@@ -650,43 +659,3 @@ What we'd like to experiment with further is more outbreaks in diffrent places a
 # Bijlagen
 
 Bijlage A: The rmd file of the paper with all the code
-
-
-
-
- * let op de bronnen, zorg ervoor dat er geen plagiaat is
- 
-introductie
-    eerste paragraaf
-        introductie onderwerp, intresse krijgen
-        geeft context en probleem, welk probleem wil je oplossen
-        wat is het doel
-        
-    volgende paragraven
-        achtergrond van het onderwerp
-        context, zie de paper/onderzoek. wat is hier al gedaan
-        Historie van model (evt.)
-        Problemen
-        -> Studie
-    
-    Indeling Verslag
-
-Methoden
-    Waar komt data/model vandaan
-    Model beschrijven visueel (inkscape, draw.oi, dia) & formules (niet als plaatjes)
-    inline formule is met #$, formule appart is met dubbel
-    aanpak/ variatie
-    Analyse
-    hier moeten ook nog de programma's in de je gebruikt("we doen analyse met R")(veel programma's met versie erbij in een apparte tabel)
-    
-Resultaten
-
-Conclusie/Discussie
-
-Bronnen
-
-suplementing ding
-appendix
-
-
-jafta stomp
