@@ -33,7 +33,7 @@ library(pander)
 # 1. Introduction
 
 
-In this day and age the world is getting smaller and smaller. To get from europe to the united states it roughly takes 11 hours. This ease of travelling everywhere in the world within one day comes with one huge risk, the risk of spreading a dangerous infectious disease. On july 20, 2014 a infected passenger, with the Ebola virus disease (EVD), arrived in Nigeria. After a total of 20 cases where 8 died, Nigeria was cleared of the ebola virus on october 20, 2014 57 days. This shows what happens if 1 person is infected with ebola and begins to get in contact with others. Luckely by handeling fast not many people got infected with EVD because the authorities handeled quickly. Through our simulations we are trying to replicate the outbreak in Nigeria and see what can happen if there wasn't a quick response and we like to show if this outbreak was a abnormlity or simular to other outbreaks. Also we would like to compare the outbreak in Nigeria with other simular type of outbreaks and see if our parameters in the model are accurate for other EVD cases. [2]
+In this day and age the world is getting smaller and smaller. To get from europe to the united states it roughly takes 11 hours. This ease of travelling everywhere in the world within one day comes with one huge risk, the risk of spreading a dangerous infectious disease. On july 20, 2014 a infected passenger, with the Ebola virus disease (EVD), arrived in Nigeria. After a total of 20 cases where 8 died, Nigeria was cleared of the ebola virus on october 20, 2014 57 days. This shows what happens if 1 person is infected with ebola and begins to get in contact with others. Luckely by handeling fast not many people got infected with EVD because the authorities handeled quickly. Through our simulations we are trying to replicate the outbreak in Nigeria and see what can happen if there wasn't a quick response and we like to show if this outbreak was a abnormlity or simular to other outbreaks. Also we would like to compare the outbreak in Nigeria with other simular type of outbreaks and see if our parameters in the model are accurate for other EVD cases. The model was used before in the same sort of experiment that we are trying to replicate. Altough in the experiment before the research didn't go further into other outbreaks.
 
 
 \pagebreak
@@ -607,12 +607,19 @@ Figure 11: Model compaired to other outbreaks
 
 \pagebreak
 
-# 4. Conclusie & Discussie
+# 4. Discussion
 
-Conclusie: dit hebben we gedaan, we zijn er toen achter gekomen dat de parameter veel moesten worden verandert om het model vergelijkbaar te maken met de data.
+In the last graph the "k" variable, which stands for the rate that the transmission speed is decreased, is drasticly diffrent from our original asumptions as it was 0.19 and now 0.011. This was done because otherwise the simulation was drasticly diffrent from the outbreak data. A explaination could be that there was no real strutured combatting of the infection spread in Sierra Leaone. Also the time that measures were implementet were also changed from 3 to 200 days, this could just be that the outbreak wasn't detectet for a long time or just no measures were implementet. 
 
 Discussie:
 laat in het onderzoek kwam de fouten, optim(), review verslag was af en toe moeilijk te begrijpen, parameters, toekomst plan: andere data nemen (andere landen, andere tijden)
+
+The model has some limitations. Firstly we cant predict if a infected induvidual is maby very outgoing and infecting lots or if that person isolates himself or gets isolated. Second we fitted our first simulations upon a very small outbreak of only 20 cases. Third we used the asumption that the infectiousness was equal over the whole period and not tat there could be variations. fourth the case location, as in hosptial settings and whatnot in those quarantine locations spread would be minimal.
+
+In our simulations we had some problems with the r code, firstly we late in the making we found that there was something wrong with the transmission decline, as the decline didnt start at our given "t"  but is started imidtly which gave some weird results. Second in the paper we tried to replicate they used optim to fit the model to their data. We did try using optim but as seen by the blue line in the last graph figure: 11 it didn't really do what we expected. Third the outbreak data from the other experiment was not avalable anywhere anymore so we had to judgy py graph comparison and which parameters they used was also very unclear until the end.
+
+What we'd like to experiment with further is more outbreaks in diffrent places and times to see the diffrences and see if the model still applies, So that at a later date with other outbreaks this model can be used for damage assesment.
+
 
 
 
@@ -625,7 +632,8 @@ laat in het onderzoek kwam de fouten, optim(), review verslag was af en toe moei
 
 2. Wikipedia, Ebolavirus. (2018, 29 mei). Retrieved from [https://en.wikipedia.org/wiki/Ebolavirus](https://en.wikipedia.org/wiki/Ebolavirus), on 10-06-2018
 
-3. bronnen Jouke
+3. Centers for Disease Control and Prevention (2017, 27 December). Retreved from
+[https://www.cdc.gov/vhf/ebola/history/2014-2016-outbreak/case-counts.html](https://www.cdc.gov/vhf/ebola/history/2014-2016-outbreak/case-counts.html), on 13-06-2018
 
 \pagebreak
 
