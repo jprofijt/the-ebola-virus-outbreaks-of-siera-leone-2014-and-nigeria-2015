@@ -27,6 +27,9 @@ library(pander)
 
 # Abstract
 
+Since traveling is a lot easier than 50 jears ago, we travel a lot more. Globalisation is not a bad thing but it comes with a huge risk, the risk of easily spreading infection deseases. Ebola virus disease (EVD) is one of these infection deseases. On 20 july, 2014 a infected passenger landed in Nigeria and started a outbreak. This outbreak was a pretty small one of only 20 cases, this was because of the quick respons of only 3 days. Showing how important it is to react quickly to an infection. In this paper we tried to match an EVD model to the outbreaks of Nigeria 2015 and Sierra Leone 2014 to show the value of a quick reaction.
+
+
 \pagebreak
 
 
@@ -564,12 +567,17 @@ colnames(exp.out) <- c("Time",
 ```
 
 ```{r}
-exp.para.df <- data.frame(st.para)
-colnames(exp.para.df) <- c("Value")
+exp.state.df <- data.frame(exp.state)
+colnames(exp.state.df) <- c("Value")
+pander(exp.state.df, style = "rmarkdown", caption = "Changed initial values for the Sierra Leone outbreak")
 ```
 
 ```{r}
+exp.para.df <- data.frame(exp.para)
+colnames(exp.para.df) <- c("Value")
+pander(exp.para.df, style = "rmarkdown", caption = "Chanced parameters for the Sierra Leone outbreak")
 ```
+
 
 ```{r}
 get.total.infected <- function(x){
@@ -589,22 +597,24 @@ optim.test <- optim(ebola_data.sorted$Total.Cases..Sierra.Leone, optim.cases, mo
 
 plot(ebola_data.sorted$time.points, ebola_data.sorted$Total.Cases..Sierra.Leone,
      type = "p",
-     pch = 20, col = "black",
+     pch = 20, 
+     col = "black",
      ylab = "Total EVD Infections",
      xlab = "Time (days)",
-     main = "Model VS. Outbreak data Sierra Leone",
-     sub = "Model transmission decay set to 0.011(was k=0.19) and time to implement controlmeasures set to 200 days")
+     main = "Model VS. Outbreak data Sierra Leone")
 lines(time, total.cases,
       col = "red", type = "l")
 lines(ebola_data.sorted$time.points, optim.test$par,
       col = "blue")
 legend("bottomright",
        c("Simulation", "Cases Sierra Leone", "Optimisation"),
-       lty = c( 1, 5, 1),
+       lty = c( 1, NA, 1),
+       pch = c(NA, 20, NA),
        col = c("red", "black", "blue"))
 ```
-Figure 11: Model compaired to other outbreaks
+Figure 11: Model compaired to other outbreak.
 
+This plot shows the Simulation of the Sierra Leone outbreak, with the cases of the Sierra Leone outbreak next to it. The blue line in this plot is the optimisation done with the $optim()$ function with the Nelder-Mead method. For this simulation was the transmission decay set to 0.011 and the time when the controlmeasures where implemented was at day 200 as can be seen in the table 4. The amount of sucseptible people was set to 163675 and we didn't change the amount of infected people at day 0. This can been seen in table 4 [4, 5]
 \pagebreak
 
 # 4. Discussion
