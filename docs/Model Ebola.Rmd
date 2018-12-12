@@ -5,7 +5,7 @@ date: "June 1, 2018"
 output: pdf_document
 ---
 
-![Image of Ebola](Ebola.jpeg)
+![Image of Ebola](../img/Ebola.jpeg)
 
 
 ```{r setup, include=FALSE}
@@ -45,7 +45,7 @@ In this day and age the world is getting smaller and smaller. To get from europe
 
 ## 2.1. The Model
 
-![schematic model for EVD infection spread. Susceptible induviduals *S* are infected by infectious individuals *I* at rate $\beta$. Then they go through a incubation period *E* at rate   $\sigma$. After incubation induviduals become infectious *I*. These infectious people either recover *R* or die *D* at rate $\gamma$. The fatality rate so how many people die or recover is given by *f*.](EVD_Model.png)
+![schematic model for EVD infection spread. Susceptible induviduals *S* are infected by infectious individuals *I* at rate $\beta$. Then they go through a incubation period *E* at rate   $\sigma$. After incubation induviduals become infectious *I*. These infectious people either recover *R* or die *D* at rate $\gamma$. The fatality rate so how many people die or recover is given by *f*.](../img/EVD_Model.png)
 
 
 The model uses the following formula's:
@@ -479,7 +479,7 @@ Figure 10: New cases shown per day
 
 ```{r}
 # Data verkrijgen
-ebola_data <- read.csv("Data/previous-case-counts.csv", header = T, sep = ";")
+ebola_data <- read.csv("../Data/previous-case-counts.csv", header = T, sep = ";")
 ebola_data.sorted <- ebola_data[order(as.Date(ebola_data$WHO.report.date, format = "%d-%m-%Y")),]
 
 # ID toegevoegd zodat de rijen een apparte value had die altijd uniek was
@@ -659,5 +659,6 @@ What we'd like to experiment with further is more outbreaks in diffrent places a
 # Appendix
 
 Appendix A: The rmd file of the paper with all the code
+
 Appendix B: 2014 outbreak data
 
