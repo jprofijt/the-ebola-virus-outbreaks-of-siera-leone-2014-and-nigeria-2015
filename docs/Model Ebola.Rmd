@@ -1,19 +1,20 @@
 ---
-title: "Het Ebola virus"
+title: "The Ebola virus outbreaks of Siera Leone (2014) and Nigeria (2015)"
 author: "Rinze-Pieter Jonker & Jouke Profijt"
 date: "June 1, 2018"
 output: pdf_document
 ---
 
-![Image of Ebola](../img/Ebola.jpeg)
+![Image of an Ebola viroid](../img/Ebola.jpeg)
 
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE,}
 knitr::opts_chunk$set(echo = F)
 ```
 
-```{r, echo = F, message = F}
+```{r, echo = F, message = F, warning=FALSE}
 rm(list = ls())
+
 library(deSolve)
 library(pander)
 ```
@@ -27,7 +28,7 @@ library(pander)
 
 # Abstract
 
-Since traveling is a lot easier than 50 jears ago, we travel a lot more. Globalisation is not a bad thing but it comes with a huge risk, the risk of easily spreading infection deseases. Ebola virus disease (EVD) is one of these infection deseases. On 20 july, 2014 a infected passenger landed in Nigeria and started a outbreak. This outbreak was a pretty small one of only 20 cases, this was because of the quick respons of only 3 days. Showing how important it is to react quickly to an infection. In this paper we tried to match an EVD model to the outbreaks of Nigeria 2015 and Sierra Leone 2014 to show the value of a quick reaction.
+Since traveling is a lot easier than 50 jears ago, we travel a lot more. Globalisation is not a bad thing but it comes with a huge risk, the risk of easily spreading infectious diseases. Ebola virus disease (EVD) is one of these infectious diseases. On 20 July 2014, an infected passenger landed in Nigeria and started an outbreak. This outbreak was a pretty small one of only 20 cases, this was because of the quick response of only 3 days. Showing how important it is to react quickly to an infected patient. In this paper, we tried to match an EVD model to the outbreaks of Nigeria 2015 and Sierra Leone 2014 to show the value of a quick reaction.
 
 
 \pagebreak
@@ -36,7 +37,7 @@ Since traveling is a lot easier than 50 jears ago, we travel a lot more. Globali
 # 1. Introduction
 
 
-In this day and age the world is getting smaller and smaller. To get from europe to the united states it roughly takes 11 hours. This ease of travelling everywhere in the world within one day comes with one huge risk, the risk of spreading a dangerous infectious disease. On july 20, 2014 a infected passenger, with the Ebola virus disease (EVD), arrived in Nigeria. After a total of 20 cases where 8 died, Nigeria was cleared of the ebola virus on october 20, 2014 57 days. This shows what happens if 1 person is infected with ebola and begins to get in contact with others. Luckely by handeling fast not many people got infected with EVD because the authorities handeled quickly. Through our simulations we are trying to replicate the outbreak in Nigeria and see what can happen if there wasn't a quick response and we like to show if this outbreak was a abnormlity or simular to other outbreaks. Also we would like to compare the outbreak in Nigeria with other simular type of outbreaks and see if our parameters in the model are accurate for other EVD cases. The model was used before in the same sort of experiment that we are trying to replicate. Altough in the experiment before the research didn't go further into other outbreaks.
+In this day and age the world is getting smaller and smaller. To get from europe to the united states it roughly takes 11 hours. This ease of traveling everywhere in the world within one day comes with one huge risk, the risk of spreading a dangerous infectious disease. On July 20, 2014, an infected passenger, with the Ebola virus disease (EVD), arrived in Nigeria. After a total of 20 cases where 8 died, Nigeria was cleared of the ebola virus on October 20, 2014, 57 days. This shows what happens if 1 person is infected with ebola and begins to get in contact with others. Luckily by handling fast not many people got infected with EVD because the authorities handled quickly. Through our simulations, we are trying to replicate the outbreak in Nigeria and see what can happen if there wasn't a quick response and we like to show if this outbreak was an abnormality or simular to other outbreaks. Also, we would like to compare the outbreak in Nigeria with another similar type of outbreaks and see if our parameters in the model are accurate for other EVD cases. The model was used before in the same sort of experiment that we are trying to replicate. Although in the experiment before the research didn't go further into other outbreaks.
 
 
 \pagebreak
@@ -57,12 +58,12 @@ The model uses the following formula's:
 * $dR/dT = (1-f)yI$
 * $dD/dT = fyI$
 
-The model itself is a rather simple SEIR (Susceptible-Exposed-Infecious-Recovered) model, as can be seen in figure 2. The people that are in the group of susceptible people *S* will move to the exposed group *E* after they get infected by the virus, if they are exposed to the virus they will go through a incubation period $\sigma$. After they went through the incubation period they will move to the infected group *I*. Here they will move trough the infectiousness period *y*. After this they will either move to the group recoverd people *R* or the group dead people *D*. This will be caculated by using the fatality rate *f*, in the case of ebola it is 0.39. The differential equations will be solved using the $ODE()$ function from deSolve, deSolve is a package in R. [1]
+The model itself is a rather simple SEIR (Susceptible-Exposed-Infectious-Recovered) model, as can be seen in figure 2. The people that are in the group of susceptible people *S* will move to the exposed group *E* after they get infected by the virus, if they are exposed to the virus they will go through a incubation period $\sigma$. After they went through the incubation period they will move to the infected group *I*. Here they will move trough the infectiousness period *y*. After this they will either move to the group recoverd people *R* or the group dead people *D*. This will be caculated by using the fatality rate *f*, in the case of ebola it is 0.39. The differential equations will be solved using the $ODE()$ function from deSolve, deSolve is a package in R. [1]
 
 
 ## 2.2. The data
 
-The model was started with 10^6^ susceptible people *S*, 1 infected person *I* and no people that where exposed to him *E*. This was done because the case that was simulated was with one index case that could be traced. We also started with 0 dead people *D* and 0 recovered people R* because there cant be any dead people if there was nobody infected before the first day, this also goes for the recovered people. In the table below you can see the initial values of the model. [1]
+The model was started with 10^6^ susceptible people *S*, 1 infected person *I* and no people that were exposed to him *E*. This was done because the case that was simulated was with one index case that could be traced. We also started with 0 dead people *D* and 0 recovered people R* because there cant be any dead people if there was nobody infected before the first day, this also goes for the recovered people. In the table below you can see the initial values of the model. [1]
 
 \pagebreak
 
@@ -197,7 +198,7 @@ round.out <- round(st.out)
 
 ## 3.1 Simulating the model
 
-```{r, echo = F}
+```{r, echo = F, fig.cap="Amount of susceptible people over time, this graph shows predicted amount of people that are susceptible for the the ebola virus, the confidence interval of 95% is also given, this is shown by the red striped area of the graph "}
 # Susceptible people
 plot(st.out$Time, st.out$S,
      type = "n",
@@ -221,17 +222,16 @@ lines(low.out$Time, low.out$S,
 lines(st.out$Time, st.out$S,
       lwd = 2)
 legend("bottomright",
-       c("Simulation", "Confidence intervals (95% - 5%)"),
+       c("Simulation", "Confidence intervals (95%)"),
        lty = c( 1, 2),
        col = c("black", "red"))
 ```
 
-Figure 3: shows the amount of people suseptible to EVD infection with 95%-%5 confidence intervals.
-
 as shown with our model if control measures are implementet quickly the amount of people that are in danger of coming into contact with disease is minimal.
 
+\pagebreak
 
-```{r, echo=F}
+```{r, echo=F, fig.cap="Amount of exposed people of time, This graph shows the amount of people that are exposed to the Ebola virus over time, the confidence interval is given in the Red striped area."}
 # Exposed people
 plot(st.out$Time, st.out$E,
      type = "n",
@@ -255,16 +255,16 @@ lines(low.out$Time, low.out$E,
 lines(st.out$Time, st.out$E,
       lwd = 2)
 legend("topright",
-       c("Simulation", "Confidence intervals (95% - 5%)"),
+       c("Simulation", "Confidence intervals (95%)"),
        lty = c( 1, 2),
        col = c("black", "red"))
 ```
 
-Figure 4: People exposed to a infected induvidual with 95%-5% confidence intervals
-
 In this graph you can see the amount of exposed people over time, this plot uses the standard values over a timespan of 58 days.
 
-```{r, echo=F}
+\pagebreak
+
+```{r, echo=F, fig.cap="The amount of infected people over time, in this graph the prediction of the amount of infected persons is graphed over time with the confidence interval given as the red striped area"}
 # Infected people
 plot(st.out$Time, st.out$I,
      type = "l",
@@ -288,16 +288,16 @@ lines(low.out$Time, low.out$I,
 lines(st.out$Time, st.out$I,
       lwd = 2)
 legend("topright",
-       c("Simulation", "Confidence intervals (95% - 5%)"),
+       c("Simulation", "Confidence intervals (95%)"),
        lty = c( 1, 2),
        col = c("black", "red"))
 ```
 
-Figure 5: amount of people infected with EVD with 95%-5% confidence intervals
-
 This plot shows the amount of people that where infected in the during the infection, the standard values where used over a timespan of 58 days.
 
-```{r, echo=F}
+\pagebreak
+
+```{r, echo=F, fig.cap="The predicted amount of people that have survived the Ebola infection. This graph shows the predicted amount of people that have survived their infectionm, the confidence interval is given with the red striped area"}
 # Recovered people
 plot(st.out$Time, st.out$R,
      type = "n",
@@ -321,16 +321,16 @@ lines(low.out$Time, low.out$R,
 lines(st.out$Time, st.out$R,
       lwd = 2)
 legend("topright",
-       c("Simulation", "Confidence intervals (95% - 5%)"),
+       c("Simulation", "Confidence intervals (95%)"),
        lty = c( 1, 2),
        col = c("black", "red"))
 ```
 
-Figure 6: Total amount of people recovered from EVD infection, with 95%-5% confidence intervals.
-
 The graph above shows the amount of people that have recovered from the EVD virus, these people will also be immuum for the Ebola virus, so they won't be added to the group of sucseptible people. This graph uses the standard parameters over a timespan of 58 days.
 
-```{r, echo=F}
+\pagebreak
+
+```{r, echo=F, fig.cap="The predicted amount of people that did not survive their infection of the Ebola virus, the red striped area shows the confidence interval"}
 # Dead people
 plot(st.out$Time, st.out$D,
      type = "n",
@@ -354,14 +354,14 @@ lines(low.out$Time, low.out$D,
 lines(st.out$Time, st.out$D,
       lwd = 2)
 legend("topright",
-       c("Simulation", "Confidence intervals (95% - 5%)"),
+       c("Simulation", "Confidence intervals (95%)"),
        lty = c( 1, 2),
        col = c("black", "red"))
 ```
 
-Figure 7: total casualties from EVD infection with 95%-5% confidence intevals.
-
 The plot above shows the amount of dead people over the duration of the outbreak, the simulation in this plot used the standard values over an timespan of 58 days.
+
+\pagebreak
 
 ```{r}
 difference.by.day <- function(x, collumn){
@@ -405,7 +405,7 @@ daily.low.cases <- apply(low.out, 1, diffrence.infections)
 
 ```
 
-```{r, echo=F}
+```{r, echo=F, fig.cap="Recovered induviduals per day with 95% confidence intervals."}
 plot(time, difference.recovered,
      type = "n",
      main = "Amount of recovered people per day",
@@ -426,15 +426,13 @@ lines(time, low.recovered,
 points(time, difference.recovered,
        pch = 15)
 legend("topright",
-       c("Simulation", "Confidence interval (95% - 5%)"),
+       c("Simulation", "Confidence interval (95%)"),
        lty = c(NA, 2),
        pch = c(15, NA),
        col = c("black", "red"))
 ```
 
-Figure 8: Recovered induviduals per day with 95%-5% confidence intervals.
-
-```{r, echo=F}
+```{r, echo=F, fig.cap="Recovered induviduals per day with 95%-5% confidence intervals."}
 
 plot(time, difference.dead,
      type = "n",
@@ -456,15 +454,15 @@ lines(time, low.dead,
 points(time, difference.dead,
        pch = 15)
 legend("topright",
-       c("Simulation", "Confidence interval (95% - 5%)"),
+       c("Simulation", "Confidence interval (95%)"),
        lty = c(NA, 2),
        pch = c(15, NA),
        col = c("black", "red"))
 ```
 
-Figure 9: Diseased induviduals per day with 95%-5% confidence intervals
 
-```{r, echo=F}
+
+```{r, echo=F, fig.cap= "New cases shown per day"}
 plot(time, daily.new.cases,
      main = "New cases per day",
      ylab = "Cases",
@@ -472,8 +470,7 @@ plot(time, daily.new.cases,
      type = "l")
 ```
 
-Figure 10: New cases shown per day
-
+\pagebreak
 
 ## 3.2 Matching the model to exprimental data
 
@@ -588,7 +585,7 @@ pander(exp.para.df, style = "rmarkdown", caption = "Chanced parameters for the S
 ```
 
 
-```{r}
+```{r, fig.cap="Model compaired to other outbreak."}
 get.total.infected <- function(x){
   cases <- x[1]
   index <- subset(exp.out, Time <= cases, select = c("I"))
@@ -621,23 +618,20 @@ legend("bottomright",
        pch = c(NA, 20, NA),
        col = c("red", "black", "blue"))
 ```
-Figure 11: Model compaired to other outbreak.
 
 This plot shows the Simulation of the Sierra Leone outbreak, with the cases of the Sierra Leone outbreak next to it. The blue line in this plot is the optimisation done with the $optim()$ function with the Nelder-Mead method. For this simulation was the transmission decay set to 0.011 and the time when the controlmeasures where implemented was at day 200 as can be seen in the table 4. The amount of sucseptible people was set to 163675 and we didn't change the amount of infected people at day 0. This can been seen in table 4 [4, 5]
 \pagebreak
 
 # 4. Discussion
 
-In the last graph the "k" variable, which stands for the rate that the transmission speed is decreased, is drasticly diffrent from our original asumptions as it was 0.19 and now 0.011. This was done because otherwise the simulation was drasticly diffrent from the outbreak data. A explaination could be that there was no real strutured combatting of the infection spread in Sierra Leaone. Also the time that measures were implementet were also changed from 3 to 200 days, this could just be that the outbreak wasn't detectet for a long time or just no measures were implementet. 
+In the last graph the "k" variable, which stands for the rate that the transmission speed is decreased, is drastically different from our original assumptions as it was 0.19 and now 0.011. This was done because otherwise, the simulation was drastically different from the outbreak data. An explanation could be that there was no real structured combatting of the infection spread in Sierra Leone. Also, the time that measures were implemented was also changed from 3 to 200 days, this could just be that the outbreak wasn't detected for a long time or just no measures were implemented. 
 
-Discussie:
-laat in het onderzoek kwam de fouten, optim(), review verslag was af en toe moeilijk te begrijpen, parameters, toekomst plan: andere data nemen (andere landen, andere tijden)
+Discussion:
+The model has some limitations. Firstly we can't predict if an infected individual is maybe very outgoing and infecting lots or if that person isolates himself or gets isolated. Second, we fitted our first simulations upon a very small outbreak of only 20 cases. Third, we used the assumption that the infectiousness was equal over the whole period and not that there could be variations. fourth the case location, as in hospital settings and whatnot in those quarantine locations spread would be minimal.
 
-The model has some limitations. Firstly we cant predict if a infected induvidual is maby very outgoing and infecting lots or if that person isolates himself or gets isolated. Second we fitted our first simulations upon a very small outbreak of only 20 cases. Third we used the asumption that the infectiousness was equal over the whole period and not tat there could be variations. fourth the case location, as in hosptial settings and whatnot in those quarantine locations spread would be minimal.
+In our simulations we had some problems with the r code, firstly, we found that there was something wrong with the transmission decline, as the decline didn't start at our given "t"  but is started immediately which gave some weird results. Second, in the paper we tried to replicate they used optim to fit the model to their data. We did try using optim but as seen by the blue line in the last graph figure: 11 it didn't really do what we expected. Third, the outbreak data from the other experiment was not available anywhere anymore so we had to judgy py graph comparison and which parameters they used were also very unclear until the end.
 
-In our simulations we had some problems with the r code, firstly we late in the making we found that there was something wrong with the transmission decline, as the decline didnt start at our given "t"  but is started imidtly which gave some weird results. Second in the paper we tried to replicate they used optim to fit the model to their data. We did try using optim but as seen by the blue line in the last graph figure: 11 it didn't really do what we expected. Third the outbreak data from the other experiment was not avalable anywhere anymore so we had to judgy py graph comparison and which parameters they used was also very unclear until the end.
-
-What we'd like to experiment with further is more outbreaks in diffrent places and times to see the diffrences and see if the model still applies, So that at a later date with other outbreaks this model can be used for damage assesment.
+What we'd like to experiment with further is more outbreaks in different places and times to see the differences and see if the model still applies, So that at a later date with other outbreaks this model can be used for damage assessment.
 
 
 
