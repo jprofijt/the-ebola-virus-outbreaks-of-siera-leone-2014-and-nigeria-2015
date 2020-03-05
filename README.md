@@ -16,7 +16,7 @@ git clone https://RinzePieterJonker@bitbucket.org/Rinze-Pieter/thema08-system-bi
 
 ### Prerequisites
 To run the simulation the coding language R (version 3.X ) is needed. The packages that are needed for the code are
-DeSolve and pander, these packages can both be installed by using the R command install.package(\<Package\>).
+DeSolve and pander, these packages can both be installed by using the R command install.package(<Package\>).
 
 ## Files Included
  - __Data/__
