@@ -11,7 +11,7 @@ results that where achieved in the paper of C.L. Althaus et al. [1]
 ### Installation
 The files and the model can be downloaded by cloning the repository
 ```bash
-git clone https://RinzePieterJonker@bitbucket.org/Rinze-Pieter/thema08-system-biology.git
+git clone https://RinzePieterJonker@bitbucket.org/Rinze-Pieter/the-ebola-virus-outbreaks-of-siera-leone-2014-and-nigeria-2015.git
 ```
 
 ### Prerequisites
