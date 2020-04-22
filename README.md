@@ -30,7 +30,7 @@ DeSolve and pander, these packages can both be installed by using the R command 
  - __img/__ - A directory containing all the images that where used for the reports
 
 ## Authors
- - __Jouke Profijt__ (J.profijt@gmail.com)
+ - __Jouke Profijt__ (jouke.profijt@gmail.com)
  - __Rinze-Pieter Jonker__ (rinze.pieter.jonker@gmail.com)
  
 ## References
