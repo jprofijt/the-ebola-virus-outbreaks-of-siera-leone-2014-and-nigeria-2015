@@ -1,0 +1,7 @@
+Data/* linguist-vendored
+Docs/*.pdf linguist-vendored
+Docs/Opgaven/*.docx linguist-vendored
+Docs/Opgaven/*.log linguist-vendored
+Docs/Opgaven/*.ods linguist-vendored
+img/* linguist-vendored
+*.Rmd linguist-language=R
